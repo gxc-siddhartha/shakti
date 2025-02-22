@@ -1,0 +1,54 @@
+{
+  "project_info": {
+    "project_number": "644449634249",
+    "project_id": "shakti-99f2e",
+    "storage_bucket": "shakti-99f2e.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:644449634249:android:388451fe7e78155f1f4a18",
+        "android_client_info": {
+          "package_name": "com.example.shakti"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "644449634249-osgcs3dua8qjiaemvg9n490bq4j48ull.apps.googleusercontent.com",
+          "client_type": 1,
+          "android_info": {
+            "package_name": "com.example.shakti",
+            "certificate_hash": "f9328c93a37018f4ba8cfe77b416a045a7fa6d38"
+          }
+        },
+        {
+          "client_id": "644449634249-bsnm6ag6hkkst25bat2kru4o89k25j31.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyBs85xFHvKTdbCO2qL_czGF-XhDqkwxLBY"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "644449634249-bsnm6ag6hkkst25bat2kru4o89k25j31.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "644449634249-bd242g1vls77sgf4o2eqn1mkmebp0s8n.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.example.shakti"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
