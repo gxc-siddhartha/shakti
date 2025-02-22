@@ -70,7 +70,11 @@ class AuthController extends GetxController {
   }
 
   // In AuthController
-  Future<void> loginWithEmail(String email, String password) async {
+  Future<void> loginWithEmail(
+    String email,
+    String password,
+    BuildContext context,
+  ) async {
     try {
       isLoading.value = true;
       final result = await _authRepository.signInWithEmailAndPassword(
@@ -78,24 +82,34 @@ class AuthController extends GetxController {
         password,
       );
 
-      result.fold((error) => errorMessage.value = error, (userModel) {
-        activeUser?.value = userModel;
-        // Handle successful login navigation
-      });
+      result.fold(
+        (error) {
+          print(error);
+        },
+        (userModel) {
+          activeUser?.value = userModel;
+          handleAuthNavigation(context);
+        },
+      );
     } finally {
       isLoading.value = false;
     }
   }
 
-  Future<void> loginWithGoogle() async {
+  Future<void> loginWithGoogle(BuildContext context) async {
     try {
       isLoading.value = true;
       final result = await _authRepository.signInWithGoogle();
 
-      result.fold((error) => errorMessage.value = error, (userModel) {
-        activeUser?.value = userModel;
-        // Handle successful login navigation
-      });
+      result.fold(
+        (error) {
+          print(error);
+        },
+        (userModel) {
+          activeUser?.value = userModel;
+          handleAuthNavigation(context);
+        },
+      );
     } finally {
       isLoading.value = false;
     }

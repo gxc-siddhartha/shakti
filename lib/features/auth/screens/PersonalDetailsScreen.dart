@@ -432,6 +432,8 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                                 }
                                 : null,
                         style: ElevatedButton.styleFrom(
+                          elevation: 0,
+
                           backgroundColor:
                               Theme.of(context).colorScheme.primary,
                           foregroundColor:

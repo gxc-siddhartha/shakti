@@ -279,6 +279,8 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                 }
                                 : null,
                         style: ElevatedButton.styleFrom(
+                          elevation: 0,
+
                           backgroundColor:
                               Theme.of(context).colorScheme.primary,
                           foregroundColor:

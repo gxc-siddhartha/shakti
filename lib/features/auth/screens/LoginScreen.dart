@@ -40,12 +40,13 @@ class _LoginScreenState extends State<LoginScreen> {
       await _authController.loginWithEmail(
         _emailController.text.trim(),
         _passwordController.text.trim(),
+        context,
       );
     }
   }
 
   void _handleGoogleSignIn() async {
-    await _authController.loginWithGoogle();
+    await _authController.loginWithGoogle(context);
   }
 
   String? _validateEmail(String? value) {
@@ -193,6 +194,7 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton(
                             onPressed: isFormValid ? _handleEmailSignIn : null,
                             style: ElevatedButton.styleFrom(
+                              elevation: 0,
                               backgroundColor:
                                   Theme.of(context).colorScheme.primary,
                               foregroundColor:
@@ -220,6 +222,8 @@ class _LoginScreenState extends State<LoginScreen> {
                           child: ElevatedButton.icon(
                             onPressed: _handleGoogleSignIn,
                             style: ElevatedButton.styleFrom(
+                              elevation: 0,
+
                               backgroundColor:
                                   Theme.of(
                                     context,

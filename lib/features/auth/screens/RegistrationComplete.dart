@@ -48,6 +48,8 @@ class _RegistrationCompleteScreenState
                       context.goNamed(RouterConstants.homeScreenRouteName);
                     },
                     style: ElevatedButton.styleFrom(
+                      elevation: 0,
+
                       backgroundColor: Theme.of(context).colorScheme.primary,
                       foregroundColor: Theme.of(context).colorScheme.onPrimary,
                       padding: const EdgeInsets.symmetric(vertical: 16),

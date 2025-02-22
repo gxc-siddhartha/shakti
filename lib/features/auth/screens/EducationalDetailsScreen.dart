@@ -241,6 +241,8 @@ class _EducationDetailsScreenState extends State<EducationDetailsScreen> {
                           child: ElevatedButton(
                             onPressed: isFormValid ? _handleSubmit : null,
                             style: ElevatedButton.styleFrom(
+                              elevation: 0,
+
                               backgroundColor:
                                   Theme.of(context).colorScheme.primary,
                               foregroundColor:

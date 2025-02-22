@@ -227,6 +227,7 @@ class AuthRepository {
 
       // Update SharedPreferences
       await prefs.setBool(SharedPreferencesConstants.loginStatus, true);
+      await prefs.setBool(SharedPreferencesConstants.registrationStatus, true);
       await prefs.setString(
         SharedPreferencesConstants.userId,
         userCredential.user!.uid,
@@ -313,8 +314,8 @@ class AuthRepository {
         userModel = UserModel.fromMap(userDoc.data()!);
       }
 
-      // Update SharedPreferences
       await prefs.setBool(SharedPreferencesConstants.loginStatus, true);
+      await prefs.setBool(SharedPreferencesConstants.registrationStatus, true);
       await prefs.setString(
         SharedPreferencesConstants.userId,
         userCredential.user!.uid,
