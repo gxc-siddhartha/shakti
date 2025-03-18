@@ -75,29 +75,26 @@ class AuthRepository {
       }
 
       // Update the userModel with the current user's UID
-      final updatedUserModel = userModel.copyWith(
-        userId: _auth.currentUser!.uid,
-      );
+      final updatedUserModel = userModel.copyWith(uid: _auth.currentUser!.uid);
 
       // Reference to the users collection with the updated userId
-      final userDoc = _firestore
-          .collection('users')
-          .doc(updatedUserModel.userId);
+      final userDoc = _firestore.collection('users').doc(updatedUserModel.uid);
 
       final downloadUrl = await uploadUserImageToFirebaseStorage(file);
 
       await userDoc.set(
         updatedUserModel
             .copyWith(
-              photoUrl: downloadUrl.fold((error) => "", (success) => success),
+              profileUrl: downloadUrl.fold((error) => "", (success) => success),
             )
             .toMap(),
         SetOptions(merge: true),
       );
       await prefs.setBool(SharedPreferencesConstants.loginStatus, true);
+      await prefs.setBool(SharedPreferencesConstants.registrationStatus, true);
       await prefs.setString(
         SharedPreferencesConstants.userId,
-        userModel.userId ?? "no-uid",
+        userModel.uid ?? "no-uid",
       );
       return right(null);
     } on FirebaseException catch (e) {
@@ -137,6 +134,35 @@ class AuthRepository {
       return left('Failed to upload image: ${e.message}');
     } catch (e) {
       return left('An unexpected error occurred while uploading image: $e');
+    }
+  }
+
+  FutureEither<UserModel> getUserData() async {
+    try {
+      // If no userId is provided, use the current user's ID
+      final String uid = _auth.currentUser?.uid ?? '';
+
+      if (uid.isEmpty) {
+        return left('No user ID available');
+      }
+
+      // Get user document from Firestore
+      final userDoc = await _firestore.collection('users').doc(uid).get();
+
+      if (!userDoc.exists) {
+        return left('User not found in database');
+      }
+
+      if (userDoc.data() == null) {
+        return left('User data is null');
+      }
+
+      // Convert document to UserModel
+      return right(UserModel.fromMap(userDoc.data()!));
+    } on FirebaseException catch (e) {
+      return left('Failed to fetch user data: ${e.message}');
+    } catch (e) {
+      return left('An unexpected error occurred while fetching user data: $e');
     }
   }
 
@@ -296,13 +322,10 @@ class AuthRepository {
       if (!userDoc.exists) {
         // Create new user model if first time sign in
         userModel = UserModel(
-          userId: userCredential.user!.uid,
+          uid: userCredential.user!.uid,
           email: userCredential.user!.email,
           name: userCredential.user!.displayName,
-          photoUrl: userCredential.user!.photoURL,
-          createdAt: DateTime.now().toIso8601String(),
-          points: '0',
-          interests: [],
+          profileUrl: userCredential.user!.photoURL,
         );
 
         // Save new user to Firestore

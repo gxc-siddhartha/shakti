@@ -192,7 +192,7 @@ class _LoginScreenState extends State<LoginScreen> {
                         SizedBox(
                           width: double.infinity,
                           child: ElevatedButton(
-                            onPressed: isFormValid ? _handleEmailSignIn : null,
+                            onPressed: _handleEmailSignIn,
                             style: ElevatedButton.styleFrom(
                               elevation: 0,
                               backgroundColor:

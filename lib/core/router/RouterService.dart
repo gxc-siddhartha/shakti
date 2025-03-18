@@ -1,6 +1,5 @@
 import 'package:go_router/go_router.dart';
 import 'package:shakti/core/router/RouterConstants.dart';
-import 'package:shakti/features/auth/screens/EducationalDetailsScreen.dart';
 import 'package:shakti/features/auth/screens/LoginScreen.dart';
 import 'package:shakti/features/auth/screens/PersonalDetailsScreen.dart';
 import 'package:shakti/features/auth/screens/RegistrationComplete.dart';
@@ -33,24 +32,17 @@ class RouterService {
                 path: "/registraion/personalDetails",
                 name: RouterConstants.personalDetailsScreenRouteName,
                 builder: (context, state) => PersonalDetailsScreen(),
-                routes: [
-                  GoRoute(
-                    path: "/registraion/personalDetails/educationalDetals",
-                    name: RouterConstants.educationalDetailsScreenRouteName,
-                    builder: (context, state) => EducationDetailsScreen(),
-                  ),
-                ],
-              ),
-              GoRoute(
-                path: "/registraion/complete",
-                name: RouterConstants.registrationCompleteScreenRouteName,
-                builder: (context, state) {
-                  return RegistrationCompleteScreen();
-                },
               ),
             ],
           ),
         ],
+      ),
+      GoRoute(
+        path: "/registraion/complete",
+        name: RouterConstants.registrationCompleteScreenRouteName,
+        builder: (context, state) {
+          return RegistrationCompleteScreen();
+        },
       ),
       GoRoute(
         path: "/home",

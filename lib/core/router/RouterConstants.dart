@@ -3,8 +3,6 @@ class RouterConstants {
   static const registrationScreenRouteName = "registrationScreenRouteName";
   static const personalDetailsScreenRouteName =
       "personalDetailsScreenRouteName";
-  static const educationalDetailsScreenRouteName =
-      "educationalDetailsScreenRouteName";
   static const registrationCompleteScreenRouteName =
       "registrationCompleteScreenRouteName";
 

@@ -12,13 +12,30 @@ class AuthController extends GetxController {
   // Loading state
   RxBool isLoading = false.obs;
 
-  Rx<UserModel>? activeUser = UserModel.empty().obs;
+  Rx<UserModel> activeUser = UserModel.empty().obs;
 
   // Error state
   RxString errorMessage = ''.obs;
   Rx<File> selectedImage = File("").obs;
 
   RxString password = "".obs;
+
+  Future<void> getUserData() async {
+    isLoading.value = true;
+    final response = await _authRepository.getUserData();
+    response.fold(
+      (error) {
+        isLoading.value = false;
+
+        print(error);
+      },
+      (success) {
+        activeUser.value = success;
+        print(success.toString());
+        isLoading.value = false;
+      },
+    );
+  }
 
   // Registration flow
   Future<bool> registerUser({required BuildContext context}) async {
@@ -28,7 +45,7 @@ class AuthController extends GetxController {
 
       // Step 1: Create user in Firebase Auth
       final authResult = await _authRepository.createUserInFirestoreEMPS(
-        activeUser!.value.email!,
+        activeUser.value.email!,
         password.value,
       );
 
@@ -42,7 +59,7 @@ class AuthController extends GetxController {
           // Step 3: Upload image and create user in Firestore
           final databaseResult = await _authRepository
               .createUserInFirestoreDatabase(
-                activeUser!.value,
+                activeUser.value,
                 selectedImage.value,
               );
 
@@ -87,7 +104,7 @@ class AuthController extends GetxController {
           print(error);
         },
         (userModel) {
-          activeUser?.value = userModel;
+          activeUser.value = userModel;
           handleAuthNavigation(context);
         },
       );
@@ -106,7 +123,7 @@ class AuthController extends GetxController {
           print(error);
         },
         (userModel) {
-          activeUser?.value = userModel;
+          activeUser.value = userModel;
           handleAuthNavigation(context);
         },
       );
@@ -177,7 +194,7 @@ class AuthController extends GetxController {
 
       if (context.mounted) {
         if (isUserLoggedIn && !isUserRegistered) {
-          context.goNamed(RouterConstants.loginScreenRouteName);
+          context.goNamed(RouterConstants.registrationScreenRouteName);
         } else if (isUserLoggedIn && isUserRegistered) {
           // User is both logged in and registered - go to home screen
           context.goNamed(RouterConstants.homeScreenRouteName);

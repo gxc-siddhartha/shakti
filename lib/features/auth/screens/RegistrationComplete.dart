@@ -15,7 +15,6 @@ class _RegistrationCompleteScreenState
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(title: const Text("")),
       body: SafeArea(
         child: Center(
           child: Padding(
