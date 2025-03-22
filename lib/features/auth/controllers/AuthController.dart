@@ -31,6 +31,7 @@ class AuthController extends GetxController {
       },
       (success) {
         activeUser.value = success;
+
         print(success.toString());
         isLoading.value = false;
       },
@@ -209,6 +210,36 @@ class AuthController extends GetxController {
       if (context.mounted) {
         context.goNamed(RouterConstants.loginScreenRouteName);
       }
+    }
+  }
+
+  // Sign out user and handle navigation
+  Future<void> signOut(BuildContext context) async {
+    try {
+      isLoading.value = true;
+      errorMessage.value = '';
+
+      final result = await _authRepository.signOut();
+
+      result.fold(
+        (error) {
+          errorMessage.value = error;
+          print(error);
+        },
+        (_) async {
+          // Reset active user to empty
+          activeUser.value = UserModel.empty();
+
+          if (context.mounted) {
+            context.goNamed(RouterConstants.loginScreenRouteName);
+          }
+        },
+      );
+    } catch (e) {
+      errorMessage.value = 'An unexpected error occurred during sign out: $e';
+      print(errorMessage.value);
+    } finally {
+      isLoading.value = false;
     }
   }
 }

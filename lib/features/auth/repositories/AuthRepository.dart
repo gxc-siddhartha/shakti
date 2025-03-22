@@ -353,4 +353,33 @@ class AuthRepository {
       return left('An unexpected error occurred: $e');
     }
   }
+
+  FutureEither<void> signOut() async {
+    final prefs = await SharedPreferences.getInstance();
+    try {
+      // Sign out from Firebase Auth
+      await _auth.signOut();
+
+      // Sign out from Google if it was used
+      if (await googleSignIn.isSignedIn()) {
+        await googleSignIn.signOut();
+      }
+
+      // Clear all relevant SharedPreferences
+      await _clearAuthStatus();
+      await prefs.setBool(SharedPreferencesConstants.registrationStatus, false);
+
+      // Additional cleanup
+      await prefs.remove(SharedPreferencesConstants.userId);
+
+      // Clear any cached user data if you have any
+      // This is where you could clear any in-memory caches
+
+      return right(null);
+    } on FirebaseAuthException catch (e) {
+      return left('Failed to sign out from Firebase: ${e.message}');
+    } catch (e) {
+      return left('An unexpected error occurred during sign out: $e');
+    }
+  }
 }

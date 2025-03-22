@@ -3,12 +3,12 @@ import 'dart:convert';
 
 class SubjectModel {
   final String? subjectName;
-  final String? totalEvents;
-  final String? attendedEvents;
-  final String? occuredEvents;
-  final String? missedEvents;
-  final String? currentPercentage;
-  final String? percentageRequiredToCover;
+  final int? totalEvents;
+  final int? attendedEvents;
+  final int? occuredEvents;
+  final int? missedEvents;
+  final int? currentPercentage;
+  final int? percentageRequiredToCover;
   SubjectModel({
     this.subjectName,
     this.totalEvents,
@@ -21,12 +21,12 @@ class SubjectModel {
 
   SubjectModel copyWith({
     String? subjectName,
-    String? totalEvents,
-    String? attendedEvents,
-    String? occuredEvents,
-    String? missedEvents,
-    String? currentPercentage,
-    String? percentageRequiredToCover,
+    int? totalEvents,
+    int? attendedEvents,
+    int? occuredEvents,
+    int? missedEvents,
+    int? currentPercentage,
+    int? percentageRequiredToCover,
   }) {
     return SubjectModel(
       subjectName: subjectName ?? this.subjectName,
@@ -57,22 +57,20 @@ class SubjectModel {
       subjectName:
           map['subjectName'] != null ? map['subjectName'] as String : null,
       totalEvents:
-          map['totalEvents'] != null ? map['totalEvents'] as String : null,
+          map['totalEvents'] != null ? map['totalEvents'] as int : null,
       attendedEvents:
-          map['attendedEvents'] != null
-              ? map['attendedEvents'] as String
-              : null,
+          map['attendedEvents'] != null ? map['attendedEvents'] as int : null,
       occuredEvents:
-          map['occuredEvents'] != null ? map['occuredEvents'] as String : null,
+          map['occuredEvents'] != null ? map['occuredEvents'] as int : null,
       missedEvents:
-          map['missedEvents'] != null ? map['missedEvents'] as String : null,
+          map['missedEvents'] != null ? map['missedEvents'] as int : null,
       currentPercentage:
           map['currentPercentage'] != null
-              ? map['currentPercentage'] as String
+              ? map['currentPercentage'] as int
               : null,
       percentageRequiredToCover:
           map['percentageRequiredToCover'] != null
-              ? map['percentageRequiredToCover'] as String
+              ? map['percentageRequiredToCover'] as int
               : null,
     );
   }

@@ -156,7 +156,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               context,
                             ).colorScheme.onSurface.withOpacity(0.05),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
@@ -185,7 +185,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               context,
                             ).colorScheme.onSurface.withOpacity(0.05),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
@@ -233,7 +233,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                               context,
                             ).colorScheme.onSurface.withOpacity(0.05),
                             border: OutlineInputBorder(
-                              borderRadius: BorderRadius.circular(12),
+                              borderRadius: BorderRadius.circular(5),
                               borderSide: BorderSide.none,
                             ),
                             contentPadding: const EdgeInsets.symmetric(
@@ -301,7 +301,7 @@ class _RegistrationScreenState extends State<RegistrationScreen> {
                                   Theme.of(context).colorScheme.onPrimary,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                             ),
                             child: const Text(

@@ -90,7 +90,7 @@ class _LoginScreenState extends State<LoginScreen> {
                             : AutovalidateMode.disabled,
                     child: Column(
                       children: [
-                        Image.asset('lib/assets/brand/logo.png', height: 100),
+                        Image.asset('assets/brand/logo.png', height: 100),
                         const Text(
                           'Login',
                           style: TextStyle(
@@ -234,7 +234,7 @@ class _LoginScreenState extends State<LoginScreen> {
                               ),
                             ),
                             icon: Image.asset(
-                              'lib/assets/google_logo.png',
+                              'assets/google_logo.png',
                               height: 24,
                             ),
                             label: Text(

@@ -6,13 +6,19 @@ class Apptheme {
   static final ThemeData lightAppTheme = ThemeData(
     useMaterial3: false,
     scaffoldBackgroundColor: const Color(0xffF2F2F2),
-
+    fontFamily: "Inter",
     appBarTheme: AppBarTheme(
-      titleTextStyle: TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
+      elevation: 0,
+      iconTheme: IconThemeData(color: Colors.black),
+      backgroundColor: Colors.white,
+      titleTextStyle: TextStyle(
+        fontSize: 16,
+        fontWeight: FontWeight.w500,
+        color: Colors.black,
+      ),
       systemOverlayStyle: const SystemUiOverlayStyle(
         statusBarColor: Colors.transparent,
         statusBarIconBrightness: Brightness.dark,
-        // This will make icons dark
       ),
     ),
     brightness: Brightness.light,

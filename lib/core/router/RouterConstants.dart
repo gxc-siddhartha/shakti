@@ -7,4 +7,10 @@ class RouterConstants {
       "registrationCompleteScreenRouteName";
 
   static const homeScreenRouteName = "homeScreenRouteName";
+  static const scheduleScreenRouteName = "scheduleScreenRouteName";
+  static const settingsScreenRouteName = "settingsScreenRouteName";
+  static const subjectDetailsScreenRouteName = "subjectDetailsScreenRouteName";
+
+  // Shell route name
+  static const shellRouteName = "shellRouteName";
 }

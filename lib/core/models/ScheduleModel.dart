@@ -7,25 +7,34 @@ class ScheduleModel {
   final String? startTimeInMillis;
   final String? endTimeInMillis;
   final SubjectModel? subject;
+  final String? repeatEndDateInMillis;
   final bool? canRepeat;
+  final String? repeatRule;
   ScheduleModel({
     this.startTimeInMillis,
     this.endTimeInMillis,
     this.subject,
+    this.repeatEndDateInMillis,
     this.canRepeat,
+    this.repeatRule,
   });
 
   ScheduleModel copyWith({
     String? startTimeInMillis,
     String? endTimeInMillis,
     SubjectModel? subject,
+    String? repeatEndDateInMillis,
     bool? canRepeat,
+    String? repeatRule,
   }) {
     return ScheduleModel(
       startTimeInMillis: startTimeInMillis ?? this.startTimeInMillis,
       endTimeInMillis: endTimeInMillis ?? this.endTimeInMillis,
       subject: subject ?? this.subject,
+      repeatEndDateInMillis:
+          repeatEndDateInMillis ?? this.repeatEndDateInMillis,
       canRepeat: canRepeat ?? this.canRepeat,
+      repeatRule: repeatRule ?? this.repeatRule,
     );
   }
 
@@ -34,7 +43,9 @@ class ScheduleModel {
       'startTimeInMillis': startTimeInMillis,
       'endTimeInMillis': endTimeInMillis,
       'subject': subject?.toMap(),
+      'repeatEndDateInMillis': repeatEndDateInMillis,
       'canRepeat': canRepeat,
+      'repeatRule': repeatRule,
     };
   }
 
@@ -52,7 +63,13 @@ class ScheduleModel {
           map['subject'] != null
               ? SubjectModel.fromMap(map['subject'] as Map<String, dynamic>)
               : null,
+      repeatEndDateInMillis:
+          map['repeatEndDateInMillis'] != null
+              ? map['repeatEndDateInMillis'] as String
+              : null,
       canRepeat: map['canRepeat'] != null ? map['canRepeat'] as bool : null,
+      repeatRule:
+          map['repeatRule'] != null ? map['repeatRule'] as String : null,
     );
   }
 
@@ -63,7 +80,7 @@ class ScheduleModel {
 
   @override
   String toString() {
-    return 'ScheduleModel(startTimeInMillis: $startTimeInMillis, endTimeInMillis: $endTimeInMillis, subject: $subject, canRepeat: $canRepeat)';
+    return 'ScheduleModel(startTimeInMillis: $startTimeInMillis, endTimeInMillis: $endTimeInMillis, subject: $subject, repeatEndDateInMillis: $repeatEndDateInMillis, canRepeat: $canRepeat, repeatRule: $repeatRule)';
   }
 
   @override
@@ -73,7 +90,9 @@ class ScheduleModel {
     return other.startTimeInMillis == startTimeInMillis &&
         other.endTimeInMillis == endTimeInMillis &&
         other.subject == subject &&
-        other.canRepeat == canRepeat;
+        other.repeatEndDateInMillis == repeatEndDateInMillis &&
+        other.canRepeat == canRepeat &&
+        other.repeatRule == repeatRule;
   }
 
   @override
@@ -81,6 +100,8 @@ class ScheduleModel {
     return startTimeInMillis.hashCode ^
         endTimeInMillis.hashCode ^
         subject.hashCode ^
-        canRepeat.hashCode;
+        repeatEndDateInMillis.hashCode ^
+        canRepeat.hashCode ^
+        repeatRule.hashCode;
   }
 }
