@@ -205,13 +205,13 @@ class CCardText extends StatelessWidget {
                   padding: EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
-                    color: iconThemeColor.withValues(alpha: 0.15),
+                    color: iconThemeColor.withValues(alpha: 0.2),
                   ),
                   child: SFIcon(
                     icon,
                     color: iconThemeColor,
                     fontSize: 12,
-                    fontWeight: FontWeight.w500,
+                    fontWeight: FontWeight.bold,
                   ),
                 ),
                 SizedBox(width: screenWidth * 0.02),

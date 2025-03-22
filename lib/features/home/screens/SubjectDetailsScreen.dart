@@ -119,8 +119,8 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                 .toString(),
                             style: TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: -0.7,
+
+                              // Using the primary theme color instead of conditional color
                             ),
                           ),
                           iconThemeColor: Color(0xffBE5985),
@@ -138,8 +138,8 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                 .toString(),
                             style: TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: -0.7,
+
+                              // Using the primary theme color instead of conditional color
                             ),
                           ),
                           iconThemeColor: Color(0xffD98324),
@@ -163,8 +163,6 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                 .toString(),
                             style: TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: -0.7,
 
                               // Using the primary theme color instead of conditional color
                             ),
@@ -183,8 +181,8 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                             _getRemainingClassesText(),
                             style: TextStyle(
                               fontSize: 24,
-                              fontWeight: FontWeight.bold,
-                              letterSpacing: -0.7,
+
+                              // Using the primary theme color instead of conditional color
                             ),
                           ),
                           iconThemeColor: Theme.of(context).colorScheme.primary,
@@ -551,7 +549,10 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                     contentPadding: const EdgeInsets.symmetric(horizontal: 16),
                     title: Text(
                       _formatDateString(date),
-                      style: const TextStyle(fontWeight: FontWeight.bold),
+                      style: const TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 15,
+                      ),
                     ),
                     subtitle: Text(
                       _formatTimeFromSchedule(record.schedule),
@@ -610,10 +611,20 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
     ];
     String monthName = months[date.month - 1];
 
-    // Get last two digits of year
-    String shortYear = "'${date.year.toString().substring(2)}";
+    // Get weekday name
+    List<String> weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    // Note: In Dart, weekday is 1-based (Monday=1, Sunday=7)
+    String weekdayName = weekdays[date.weekday - 1];
 
-    return "$dayWithSuffix $monthName, $shortYear";
+    return "$dayWithSuffix $monthName, $weekdayName";
   }
 
   // Helper method to get day with appropriate suffix

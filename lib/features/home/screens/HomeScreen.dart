@@ -111,13 +111,15 @@ class _HomeScreenState extends State<HomeScreen> {
                                           ),
                                           child: CCardText(
                                             icon: SFIcons.sf_chart_pie,
+
                                             content: Text(
                                               _homeController
                                                   .overallPercentage
                                                   .value,
                                               style: TextStyle(
                                                 fontSize: 24,
-                                                fontWeight: FontWeight.bold,
+
+                                                // Using the primary theme color instead of conditional color
                                               ),
                                             ),
                                             iconThemeColor: Color(0xff3266BA),
@@ -155,8 +157,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .toString(),
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: -1,
+
+                                                  // Using the primary theme color instead of conditional color
                                                 ),
                                               ),
                                               iconThemeColor: Color(0xffBAA832),
@@ -183,8 +185,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                                     .toString(),
                                                 style: TextStyle(
                                                   fontSize: 24,
-                                                  fontWeight: FontWeight.bold,
-                                                  letterSpacing: 0,
+
+                                                  // Using the primary theme color instead of conditional color
                                                 ),
                                               ),
                                               iconThemeColor: Color(0xff29A43B),

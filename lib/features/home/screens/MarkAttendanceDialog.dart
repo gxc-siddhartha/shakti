@@ -5,7 +5,6 @@ import 'package:go_router/go_router.dart';
 import 'package:shakti/core/models/ScheduleModel.dart';
 import 'package:shakti/core/models/SubjectModel.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
-import 'package:intl/intl.dart';
 
 class MarkAttendanceDialog extends StatefulWidget {
   final SubjectModel subject;
@@ -22,7 +21,7 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
   List<ScheduleModel> subjectSchedules = [];
   bool isPresent = true; // Default to Present
 
-  // New properties for date selection
+  // Properties for date selection
   DateTime? selectedDate;
   List<DateTime> availableDates = [];
 
@@ -98,6 +97,97 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
   // Helper to check if two dates are the same day
   bool _isSameDay(DateTime a, DateTime b) {
     return a.year == b.year && a.month == b.month && a.day == b.day;
+  }
+
+  // Format date with weekday
+  String _formatDateString(DateTime date) {
+    // Get day with suffix (1st, 2nd, 3rd, etc.)
+    String dayWithSuffix = _getDayWithSuffix(date.day);
+
+    // Get month name
+    List<String> months = [
+      'January',
+      'February',
+      'March',
+      'April',
+      'May',
+      'June',
+      'July',
+      'August',
+      'September',
+      'October',
+      'November',
+      'December',
+    ];
+    String monthName = months[date.month - 1];
+
+    // Get weekday name
+    List<String> weekdays = [
+      'Monday',
+      'Tuesday',
+      'Wednesday',
+      'Thursday',
+      'Friday',
+      'Saturday',
+      'Sunday',
+    ];
+    // Note: In Dart, weekday is 1-based (Monday=1, Sunday=7)
+    String weekdayName = weekdays[date.weekday - 1];
+
+    return "$dayWithSuffix $monthName, $weekdayName";
+  }
+
+  // Helper method to get day with appropriate suffix
+  String _getDayWithSuffix(int day) {
+    if (day >= 11 && day <= 13) {
+      return "${day}th";
+    }
+
+    switch (day % 10) {
+      case 1:
+        return "${day}st";
+      case 2:
+        return "${day}nd";
+      case 3:
+        return "${day}rd";
+      default:
+        return "${day}th";
+    }
+  }
+
+  // Show date picker dialog
+  Future<void> _showDatePicker() async {
+    if (availableDates.isEmpty) return;
+
+    // Determine first and last selectable date
+    final firstDate = availableDates.reduce((a, b) => a.isBefore(b) ? a : b);
+    final lastDate = availableDates.reduce((a, b) => a.isAfter(b) ? a : b);
+
+    final DateTime? pickedDate = await showDatePicker(
+      context: context,
+      initialDate: selectedDate ?? availableDates.first,
+      firstDate: firstDate,
+      lastDate: lastDate,
+      // Only allow selecting from available dates
+      selectableDayPredicate: (DateTime day) {
+        return availableDates.any((date) => _isSameDay(date, day));
+      },
+      builder: (context, child) {
+        return Theme(
+          data: Theme.of(context).copyWith(
+            // Customize theme if needed
+            colorScheme: Theme.of(context).colorScheme,
+          ),
+          child: child!,
+        );
+      },
+    );
+
+    if (pickedDate != null) {
+      setState(() {
+        selectedDate = pickedDate;
+      });
+    }
   }
 
   @override
@@ -209,11 +299,11 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
               ),
             ),
 
-            // Only show date dropdown if a schedule is selected
+            // Only show date picker if a schedule is selected
             if (selectedSchedule != null) ...[
               const SizedBox(height: 20),
 
-              // Label for date dropdown
+              // Label for date selection
               Text(
                 'Date',
                 style: TextStyle(
@@ -224,65 +314,66 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
               ),
               const SizedBox(height: 8),
 
-              // Dropdown for date selection
-              Container(
-                decoration: BoxDecoration(
-                  border: Border.all(
-                    color: Theme.of(
-                      context,
-                    ).colorScheme.outline.withOpacity(0.5),
+              // Date picker field
+              InkWell(
+                onTap: _showDatePicker,
+                child: Container(
+                  padding: const EdgeInsets.symmetric(
+                    horizontal: 12,
+                    vertical: 16,
                   ),
-                  borderRadius: BorderRadius.circular(4),
-                ),
-                child: DropdownButtonHideUnderline(
-                  child: DropdownButton<DateTime>(
-                    isExpanded: true,
-                    value: selectedDate,
-                    hint: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 12),
-                      child: Text(
-                        'Select a date',
-                        style: TextStyle(
-                          color: Theme.of(
-                            context,
-                          ).colorScheme.onSurface.withOpacity(0.5),
+                  decoration: BoxDecoration(
+                    border: Border.all(
+                      color: Theme.of(
+                        context,
+                      ).colorScheme.outline.withOpacity(0.5),
+                    ),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: Row(
+                    children: [
+                      Expanded(
+                        child: Text(
+                          selectedDate != null
+                              ? _formatDateString(selectedDate!)
+                              : 'Select a date',
+                          style: TextStyle(
+                            color:
+                                selectedDate != null
+                                    ? Theme.of(context).colorScheme.onSurface
+                                    : Theme.of(
+                                      context,
+                                    ).colorScheme.onSurface.withOpacity(0.5),
+                          ),
                         ),
                       ),
-                    ),
-                    padding: const EdgeInsets.symmetric(horizontal: 12),
-                    onChanged: (DateTime? newValue) {
-                      setState(() {
-                        selectedDate = newValue;
-                      });
-                    },
-                    items:
-                        availableDates.map<DropdownMenuItem<DateTime>>((
-                          DateTime date,
-                        ) {
-                          // Format the date for display
-                          final dateFormat = DateFormat('EEE, MMM d, yyyy');
-                          final formattedDate = dateFormat.format(date);
-
-                          // Highlight today's date
-                          final isToday = _isSameDay(date, DateTime.now());
-                          final displayText =
-                              isToday
-                                  ? '$formattedDate (Today)'
-                                  : formattedDate;
-
-                          return DropdownMenuItem<DateTime>(
-                            value: date,
-                            child: Text(
-                              displayText,
-                              style: TextStyle(
-                                fontWeight: isToday ? FontWeight.bold : null,
-                              ),
-                            ),
-                          );
-                        }).toList(),
+                      Icon(
+                        Icons.calendar_today,
+                        size: 20,
+                        color: Theme.of(
+                          context,
+                        ).colorScheme.onSurface.withOpacity(0.5),
+                      ),
+                    ],
                   ),
                 ),
               ),
+
+              if (selectedDate != null &&
+                  _isSameDay(selectedDate!, DateTime.now())) ...[
+                const SizedBox(height: 4),
+                Padding(
+                  padding: const EdgeInsets.only(left: 4),
+                  child: Text(
+                    '(Today)',
+                    style: TextStyle(
+                      fontSize: 12,
+                      fontWeight: FontWeight.bold,
+                      color: Theme.of(context).colorScheme.primary,
+                    ),
+                  ),
+                ),
+              ],
             ],
 
             const SizedBox(height: 24),
@@ -308,13 +399,12 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
                         isPresent
                             ? Theme.of(
                               context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.4)
+                            ).colorScheme.onSurface.withOpacity(0.4)
                             : Theme.of(context).colorScheme.primary,
                   ),
                 ),
                 Switch(
                   value: isPresent,
-
                   onChanged: (value) {
                     setState(() {
                       isPresent = value;
@@ -330,7 +420,7 @@ class _MarkAttendanceDialogState extends State<MarkAttendanceDialog> {
                         !isPresent
                             ? Theme.of(
                               context,
-                            ).colorScheme.onSurface.withValues(alpha: 0.4)
+                            ).colorScheme.onSurface.withOpacity(0.4)
                             : Theme.of(context).colorScheme.primary,
                   ),
                 ),
