@@ -33,7 +33,7 @@ class AppShell extends StatelessWidget {
                 },
                 selectedLabelStyle: TextStyle(
                   fontSize: 14,
-                  fontWeight: FontWeight.w500,
+                  fontWeight: FontWeight.bold,
                 ),
 
                 selectedIconTheme: IconThemeData(
@@ -46,7 +46,6 @@ class AppShell extends StatelessWidget {
                 ),
                 unselectedIconTheme: IconThemeData(
                   color: Theme.of(context).colorScheme.onSurface.withAlpha(50),
-                  size: 22,
                 ),
                 elevation: 0,
                 backgroundColor: Theme.of(
@@ -54,16 +53,28 @@ class AppShell extends StatelessWidget {
                 ).colorScheme.surface.withOpacity(0.8),
                 items: const [
                   BottomNavigationBarItem(
-                    icon: SFIcon(SFIcons.sf_house, fontSize: 18),
+                    icon: SFIcon(
+                      SFIcons.sf_house,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     label: "Home",
                   ),
                   BottomNavigationBarItem(
-                    icon: SFIcon(SFIcons.sf_calendar, fontSize: 18),
+                    icon: SFIcon(
+                      SFIcons.sf_calendar,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
                     label: "Schedule",
                   ),
                   BottomNavigationBarItem(
-                    icon: SFIcon(SFIcons.sf_gear, fontSize: 18),
-                    label: "Settings",
+                    icon: SFIcon(
+                      SFIcons.sf_person,
+                      fontSize: 16,
+                      fontWeight: FontWeight.bold,
+                    ),
+                    label: "Profile",
                   ),
                 ],
               ),

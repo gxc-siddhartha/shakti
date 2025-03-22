@@ -1,8 +1,9 @@
-import 'dart:ui';
-
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
+import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shakti/core/helpers/HelperWidgets.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
@@ -31,6 +32,67 @@ class _HomeScreenState extends State<HomeScreen> {
   }
 
   // Method to handle navigation tab changes
+  void showIntroductionBottomSheet(BuildContext context) {
+    showModalBottomSheet(
+      context: context,
+      isScrollControlled:
+          true, // This allows the bottom sheet to take up more space
+      backgroundColor: Colors.transparent,
+      builder: (BuildContext context) {
+        return Container(
+          height:
+              MediaQuery.of(context).size.height *
+              0.85, // Take up most of the screen
+          decoration: BoxDecoration(
+            color: Theme.of(context).colorScheme.surface,
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+          ),
+          child: ClipRRect(
+            borderRadius: const BorderRadius.only(
+              topLeft: Radius.circular(20),
+              topRight: Radius.circular(20),
+            ),
+            child: IntroductionScreen(
+              pages: [
+                PageViewModel(
+                  title: "Welcome",
+                  body: "This is the first page of the introduction screen.",
+                ),
+                PageViewModel(
+                  title: "Feature Overview",
+                  body: "Learn about the main features of our app.",
+                ),
+                // Add more pages as needed
+              ],
+              onDone: () {
+                context.pop(); // Close the bottom sheet
+              },
+              onSkip: () {
+                context.pop(); // Close the bottom sheet
+              },
+              showSkipButton: true,
+              skip: const Text("Skip"),
+              next: const Text("Next"),
+              done: const Text("Done"),
+              dotsDecorator: DotsDecorator(
+                size: const Size.square(10.0),
+                activeSize: const Size(20.0, 10.0),
+                activeColor: Theme.of(context).colorScheme.primary,
+                color: Theme.of(context).colorScheme.primary.withOpacity(0.3),
+                spacing: const EdgeInsets.symmetric(horizontal: 3.0),
+                activeShape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(25.0),
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -48,10 +110,10 @@ class _HomeScreenState extends State<HomeScreen> {
                 ? SizedBox(
                   height: screenHeight,
                   width: screenWidth,
-                  child: Center(child: CircularProgressIndicator()),
+                  child: Center(child: CupertinoActivityIndicator()),
                 )
                 : PopUpAnimationWidget(
-                  delay: Duration(milliseconds: 500),
+                  delay: Duration(milliseconds: 200),
                   child: SingleChildScrollView(
                     child: Column(
                       mainAxisAlignment: MainAxisAlignment.start,
@@ -265,6 +327,8 @@ class _HomeScreenState extends State<HomeScreen> {
                                 child: Row(
                                   children: [
                                     Container(
+                                      height: 30,
+                                      width: 30,
                                       padding: EdgeInsets.all(5),
                                       decoration: BoxDecoration(
                                         borderRadius: BorderRadius.circular(
@@ -274,11 +338,13 @@ class _HomeScreenState extends State<HomeScreen> {
                                           0xffE9762B,
                                         ).withValues(alpha: 0.15),
                                       ),
-                                      child: SFIcon(
-                                        SFIcons.sf_book,
-                                        fontWeight: FontWeight.bold,
-                                        color: Color(0xffE9762B),
-                                        fontSize: 15,
+                                      child: Center(
+                                        child: SFIcon(
+                                          SFIcons.sf_book,
+                                          fontWeight: FontWeight.w800,
+                                          color: Color(0xffE9762B),
+                                          fontSize: 12,
+                                        ),
                                       ),
                                     ),
                                     SizedBox(
@@ -399,6 +465,68 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
+                        ),
+
+                        Obx(
+                          () =>
+                              _homeController.subjects.isNotEmpty
+                                  ? Padding(
+                                    padding: const EdgeInsets.only(
+                                      left: 16,
+                                      right: 16,
+                                      bottom: 16,
+                                    ),
+                                    child: CCardText(
+                                      content: Column(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.center,
+
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: [
+                                          const SizedBox(height: 16),
+                                          SFIcon(
+                                            SFIcons.sf_info_circle,
+                                            fontSize: 48,
+                                            color: Theme.of(context)
+                                                .colorScheme
+                                                .onSurface
+                                                .withValues(alpha: 0.3),
+                                          ),
+                                          const SizedBox(height: 16),
+
+                                          Text(
+                                            textAlign: TextAlign.center,
+                                            "See the instructions for better understanding of the working.",
+                                            style: TextStyle(
+                                              fontSize: 16,
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const SizedBox(height: 16),
+                                          ElevatedButton(
+                                            style: ButtonStyle(
+                                              elevation: WidgetStatePropertyAll(
+                                                0,
+                                              ),
+                                            ),
+                                            onPressed: () {
+                                              showIntroductionBottomSheet(
+                                                context,
+                                              );
+                                            },
+                                            child: Text("See Instructions"),
+                                          ),
+                                          const SizedBox(height: 16),
+                                        ],
+                                      ),
+
+                                      iconThemeColor:
+                                          Theme.of(context).colorScheme.primary,
+                                      cardTitle: "Instructions",
+                                      icon: SFIcons.sf_info,
+                                    ),
+                                  )
+                                  : Container(),
                         ),
                       ],
                     ),

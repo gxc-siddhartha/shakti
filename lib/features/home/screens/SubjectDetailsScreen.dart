@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:flutter_slidable/flutter_slidable.dart';
@@ -88,7 +89,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
         final isLoading = _attendanceController.isLoading.value;
 
         if (isLoading || _homeController.isLoading.value) {
-          return Center(child: CircularProgressIndicator());
+          return Center(child: CupertinoActivityIndicator());
         }
 
         return PopUpAnimationWidget(
@@ -324,9 +325,9 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
           maximum: upperLimit,
         ),
         primaryYAxis: NumericAxis(
-          minimum: 0,
-          maximum: 100,
-          interval: 25,
+          minimum: -5,
+          maximum: 105,
+          interval: 20,
           isVisible: false,
           labelFormat: '{value}%',
           axisLine: const AxisLine(width: 0),
@@ -353,7 +354,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
             // Gradient fill with primary color
             gradient: LinearGradient(
               colors: [
-                Theme.of(context).colorScheme.primary.withOpacity(0.5),
+                Theme.of(context).colorScheme.primary.withOpacity(0.9),
                 Theme.of(context).colorScheme.primary.withOpacity(0.0),
               ],
               begin: Alignment.topCenter,
@@ -550,7 +551,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                     title: Text(
                       _formatDateString(date),
                       style: const TextStyle(
-                        fontWeight: FontWeight.bold,
+                        fontWeight: FontWeight.w500,
                         fontSize: 15,
                       ),
                     ),
@@ -702,64 +703,120 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
 
     warningMessage += '\n\nThis action cannot be undone.';
 
-    // Show confirmation dialog
-    showDialog(
-      context: context,
-      builder:
-          (mcontext) => AlertDialog(
-            title: const Text('Remove Subject'),
-            content: Text(warningMessage),
-            actions: [
-              // Cancel button
-              TextButton(
-                onPressed: () => mcontext.pop(),
-                child: Text(
-                  'Cancel',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.onSurface,
-                  ),
+    // Determine if the device is iOS
+    final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      // Show Cupertino style dialog for iOS devices
+      showCupertinoDialog(
+        context: context,
+        builder:
+            (mcontext) => CupertinoAlertDialog(
+              title: const Text('Remove Subject'),
+              content: Text(warningMessage),
+              actions: [
+                // Cancel button
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () => mcontext.pop(),
+                  child: const Text('Cancel'),
                 ),
-              ),
 
-              // Delete button
-              TextButton(
-                onPressed: () async {
-                  // Close the dialog first
-                  mcontext.pop();
+                // Delete button
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  onPressed: () async {
+                    // Close the dialog first
+                    mcontext.pop();
 
-                  // Show loading indicator
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Deleting subject...'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
+                    // Show loading indicator
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Deleting subject...'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
 
-                  // Call the delete method
-                  final success = await _homeController.deleteSubject(
-                    widget.subject.subjectName ?? "",
-                    context,
-                  );
+                    // Call the delete method
+                    final success = await _homeController.deleteSubject(
+                      widget.subject.subjectName ?? "",
+                      context,
+                    );
 
-                  if (success) {
-                    // Show success message
-                    if (context.mounted) {
-                      context.pop();
+                    if (success) {
+                      // Show success message
+                      if (context.mounted) {
+                        context.pop();
+                      }
+                    } else {
+                      // Show error message
                     }
-                  } else {
-                    // Show error message
-                  }
-                },
-                child: Text(
-                  'Delete',
-                  style: TextStyle(
-                    color: Theme.of(context).colorScheme.error,
-                    fontWeight: FontWeight.bold,
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            ),
+      );
+    } else {
+      // Show Material style dialog for Android and other platforms
+      showDialog(
+        context: context,
+        builder:
+            (mcontext) => AlertDialog(
+              title: const Text('Remove Subject'),
+              content: Text(warningMessage),
+              actions: [
+                // Cancel button
+                TextButton(
+                  onPressed: () => mcontext.pop(),
+                  child: Text(
+                    'Cancel',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.onSurface,
+                    ),
                   ),
                 ),
-              ),
-            ],
-          ),
-    );
+
+                // Delete button
+                TextButton(
+                  onPressed: () async {
+                    // Close the dialog first
+                    mcontext.pop();
+
+                    // Show loading indicator
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Deleting subject...'),
+                        duration: Duration(seconds: 1),
+                      ),
+                    );
+
+                    // Call the delete method
+                    final success = await _homeController.deleteSubject(
+                      widget.subject.subjectName ?? "",
+                      context,
+                    );
+
+                    if (success) {
+                      // Show success message
+                      if (context.mounted) {
+                        context.pop();
+                      }
+                    } else {
+                      // Show error message
+                    }
+                  },
+                  child: Text(
+                    'Delete',
+                    style: TextStyle(
+                      color: Theme.of(context).colorScheme.error,
+                      fontWeight: FontWeight.bold,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+      );
+    }
   }
 }

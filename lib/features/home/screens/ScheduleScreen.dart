@@ -1,4 +1,5 @@
 // ScheduleScreen.dart
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:intl/intl.dart';
@@ -478,40 +479,85 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
         }
       }
 
-      showDialog(
-        context: context,
-        builder:
-            (context) => AlertDialog(
-              title: Text(schedule.subject?.subjectName ?? "Schedule Details"),
-              content: Column(
-                mainAxisSize: MainAxisSize.min,
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Text('Date: $formattedDate'),
-                  const SizedBox(height: 8),
-                  Text('Time: $timeRange'),
-                  const SizedBox(height: 8),
-                  Text('Repeat: $repeatText'),
+      // Determine if the device is iOS
+      final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+      if (isIOS) {
+        // Show Cupertino style dialog for iOS devices
+        showCupertinoDialog(
+          context: context,
+          builder:
+              (context) => CupertinoAlertDialog(
+                title: Text(
+                  schedule.subject?.subjectName ?? "Schedule Details",
+                ),
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Date: $formattedDate'),
+                    const SizedBox(height: 8),
+                    Text('Time: $timeRange'),
+                    const SizedBox(height: 8),
+                    Text('Repeat: $repeatText'),
+                  ],
+                ),
+                actions: [
+                  CupertinoDialogAction(
+                    isDefaultAction: true,
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close'),
+                  ),
+                  CupertinoDialogAction(
+                    isDestructiveAction: true,
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _confirmDeleteSchedule(context, schedule);
+                    },
+                    child: const Text('Delete'),
+                  ),
                 ],
               ),
-              actions: [
-                TextButton(
-                  onPressed: () => Navigator.pop(context),
-                  child: const Text('Close'),
+        );
+      } else {
+        // Show Material style dialog for Android and other platforms
+        showDialog(
+          context: context,
+          builder:
+              (context) => AlertDialog(
+                title: Text(
+                  schedule.subject?.subjectName ?? "Schedule Details",
                 ),
-                TextButton(
-                  style: TextButton.styleFrom(
-                    foregroundColor: Theme.of(context).colorScheme.error,
+                content: Column(
+                  mainAxisSize: MainAxisSize.min,
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text('Date: $formattedDate'),
+                    const SizedBox(height: 8),
+                    Text('Time: $timeRange'),
+                    const SizedBox(height: 8),
+                    Text('Repeat: $repeatText'),
+                  ],
+                ),
+                actions: [
+                  TextButton(
+                    onPressed: () => Navigator.pop(context),
+                    child: const Text('Close'),
                   ),
-                  onPressed: () {
-                    Navigator.pop(context);
-                    _confirmDeleteSchedule(context, schedule);
-                  },
-                  child: const Text('Delete'),
-                ),
-              ],
-            ),
-      );
+                  TextButton(
+                    style: TextButton.styleFrom(
+                      foregroundColor: Theme.of(context).colorScheme.error,
+                    ),
+                    onPressed: () {
+                      Navigator.pop(context);
+                      _confirmDeleteSchedule(context, schedule);
+                    },
+                    child: const Text('Delete'),
+                  ),
+                ],
+              ),
+        );
+      }
     } catch (e) {
       ScaffoldMessenger.of(context).showSnackBar(
         SnackBar(
@@ -532,59 +578,123 @@ class _ScheduleScreenState extends State<ScheduleScreen> {
           '\n\nThis will delete all occurrences of this recurring schedule.';
     }
 
-    showDialog(
-      context: context,
-      builder:
-          (context) => AlertDialog(
-            title: const Text('Delete Schedule'),
-            content: Text(warningMessage),
-            actions: [
-              TextButton(
-                onPressed: () => Navigator.pop(context),
-                child: const Text('Cancel'),
-              ),
-              TextButton(
-                style: TextButton.styleFrom(
-                  foregroundColor: Theme.of(context).colorScheme.error,
+    // Determine if the device is iOS
+    final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      // Show Cupertino style dialog for iOS devices
+      showCupertinoDialog(
+        context: context,
+        builder:
+            (context) => CupertinoAlertDialog(
+              title: const Text('Delete Schedule'),
+              content: Text(warningMessage),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
                 ),
-                onPressed: () async {
-                  Navigator.pop(context);
+                CupertinoDialogAction(
+                  isDestructiveAction: true,
+                  onPressed: () async {
+                    Navigator.pop(context);
 
-                  // Show loading indicator
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    const SnackBar(
-                      content: Text('Deleting schedule...'),
-                      duration: Duration(seconds: 1),
-                    ),
-                  );
-
-                  final success = await homeController.deleteSchedule(schedule);
-
-                  if (success) {
+                    // Show loading indicator
                     ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text('Schedule deleted successfully'),
-                        backgroundColor: Colors.green,
+                      const SnackBar(
+                        content: Text('Deleting schedule...'),
+                        duration: Duration(seconds: 1),
                       ),
                     );
-                  } else {
-                    ScaffoldMessenger.of(context).showSnackBar(
-                      SnackBar(
-                        content: Text(
-                          homeController.errorMessage.value.isEmpty
-                              ? 'Failed to delete schedule'
-                              : 'Error: ${homeController.errorMessage.value}',
+
+                    final success = await homeController.deleteSchedule(
+                      schedule,
+                    );
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Schedule deleted successfully'),
+                          backgroundColor: Colors.green,
                         ),
-                        backgroundColor: Theme.of(context).colorScheme.error,
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            homeController.errorMessage.value.isEmpty
+                                ? 'Failed to delete schedule'
+                                : 'Error: ${homeController.errorMessage.value}',
+                          ),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            ),
+      );
+    } else {
+      // Show Material style dialog for Android and other platforms
+      showDialog(
+        context: context,
+        builder:
+            (context) => AlertDialog(
+              title: const Text('Delete Schedule'),
+              content: Text(warningMessage),
+              actions: [
+                TextButton(
+                  onPressed: () => Navigator.pop(context),
+                  child: const Text('Cancel'),
+                ),
+                TextButton(
+                  style: TextButton.styleFrom(
+                    foregroundColor: Theme.of(context).colorScheme.error,
+                  ),
+                  onPressed: () async {
+                    Navigator.pop(context);
+
+                    // Show loading indicator
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      const SnackBar(
+                        content: Text('Deleting schedule...'),
+                        duration: Duration(seconds: 1),
                       ),
                     );
-                  }
-                },
-                child: const Text('Delete'),
-              ),
-            ],
-          ),
-    );
+
+                    final success = await homeController.deleteSchedule(
+                      schedule,
+                    );
+
+                    if (success) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        const SnackBar(
+                          content: Text('Schedule deleted successfully'),
+                          backgroundColor: Colors.green,
+                        ),
+                      );
+                    } else {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(
+                          content: Text(
+                            homeController.errorMessage.value.isEmpty
+                                ? 'Failed to delete schedule'
+                                : 'Error: ${homeController.errorMessage.value}',
+                          ),
+                          backgroundColor: Theme.of(context).colorScheme.error,
+                        ),
+                      );
+                    }
+                  },
+                  child: const Text('Delete'),
+                ),
+              ],
+            ),
+      );
+    }
   }
 
   // Custom appointment builder to match Apple Calendar style

@@ -162,19 +162,21 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                         ),
 
                         Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          crossAxisAlignment: CrossAxisAlignment.center,
                           children: [
                             Column(
                               children: [
-                                IconButton(
+                                TextButton(
                                   onPressed: _showImagePickerOptions,
-                                  icon: Container(
-                                    height: 100,
-                                    width: 100,
+                                  child: Container(
+                                    height: 50,
+                                    width: 50,
                                     decoration: BoxDecoration(
-                                      color:
-                                          Theme.of(
-                                            context,
-                                          ).colorScheme.primaryContainer,
+                                      color: Theme.of(context)
+                                          .colorScheme
+                                          .primary
+                                          .withValues(alpha: 0.15),
                                       borderRadius: BorderRadius.circular(200),
                                       border:
                                           _imageError != null
@@ -241,7 +243,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                                         context,
                                       ).colorScheme.onSurface.withOpacity(0.05),
                                       border: OutlineInputBorder(
-                                        borderRadius: BorderRadius.circular(12),
+                                        borderRadius: BorderRadius.circular(5),
                                         borderSide: BorderSide.none,
                                       ),
                                       contentPadding:
@@ -298,7 +300,7 @@ class _PersonalDetailsScreenState extends State<PersonalDetailsScreen> {
                                   Theme.of(context).colorScheme.onPrimary,
                               padding: const EdgeInsets.symmetric(vertical: 16),
                               shape: RoundedRectangleBorder(
-                                borderRadius: BorderRadius.circular(12),
+                                borderRadius: BorderRadius.circular(5),
                               ),
                             ),
                             child: const Text(

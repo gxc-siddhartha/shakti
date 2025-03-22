@@ -1,3 +1,4 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
@@ -137,7 +138,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               crossAxisAlignment: CrossAxisAlignment.end,
               children: [
                 Opacity(
-                  opacity: 0.5,
+                  opacity: 0.3,
                   child: Text(
                     "A Product by  ",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
@@ -155,31 +156,66 @@ class _SettingsScreenState extends State<SettingsScreen> {
 
   // Sign out confirmation dialog
   void _showSignOutConfirmation(BuildContext context) {
-    showDialog(
-      context: context,
-      builder:
-          (dcontext) => AlertDialog(
-            title: const Text("Sign Out"),
-            content: const Text("Are you sure you want to sign out?"),
-            actions: [
-              TextButton(
-                onPressed: () => context.pop(),
-                child: const Text("Cancel"),
-              ),
-              TextButton(
-                onPressed: () async {
-                  await _authController.signOut(context);
-                  if (dcontext.mounted) {
-                    dcontext.pop();
-                  }
-                  // For example: AuthService.signOut();
-                  // Then navigate to login screen
-                  // Navigator.pushReplacementNamed(context, '/login');
-                },
-                child: const Text("Sign Out"),
-              ),
-            ],
-          ),
-    );
+    // Determine if the device is iOS
+    final bool isIOS = Theme.of(context).platform == TargetPlatform.iOS;
+
+    if (isIOS) {
+      // Show Cupertino style dialog for iOS devices
+      showCupertinoDialog(
+        context: context,
+        builder:
+            (dcontext) => CupertinoAlertDialog(
+              title: const Text("Sign Out"),
+              content: const Text("Are you sure you want to sign out?"),
+              actions: [
+                CupertinoDialogAction(
+                  isDefaultAction: true,
+                  onPressed: () => context.pop(),
+                  child: const Text("Cancel"),
+                ),
+                CupertinoDialogAction(
+                  onPressed: () async {
+                    await _authController.signOut(context);
+                    if (dcontext.mounted) {
+                      dcontext.pop();
+                    }
+                    // For example: AuthService.signOut();
+                    // Then navigate to login screen
+                    // Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const Text("Sign Out"),
+                ),
+              ],
+            ),
+      );
+    } else {
+      // Show Material style dialog for Android and other platforms
+      showDialog(
+        context: context,
+        builder:
+            (dcontext) => AlertDialog(
+              title: const Text("Sign Out"),
+              content: const Text("Are you sure you want to sign out?"),
+              actions: [
+                TextButton(
+                  onPressed: () => context.pop(),
+                  child: const Text("Cancel"),
+                ),
+                TextButton(
+                  onPressed: () async {
+                    await _authController.signOut(context);
+                    if (dcontext.mounted) {
+                      dcontext.pop();
+                    }
+                    // For example: AuthService.signOut();
+                    // Then navigate to login screen
+                    // Navigator.pushReplacementNamed(context, '/login');
+                  },
+                  child: const Text("Sign Out"),
+                ),
+              ],
+            ),
+      );
+    }
   }
 }

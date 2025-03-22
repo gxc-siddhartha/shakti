@@ -202,16 +202,18 @@ class CCardText extends StatelessWidget {
                 Container(
                   height: 30,
                   width: 30,
-                  padding: EdgeInsets.all(8),
+
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     color: iconThemeColor.withValues(alpha: 0.2),
                   ),
-                  child: SFIcon(
-                    icon,
-                    color: iconThemeColor,
-                    fontSize: 12,
-                    fontWeight: FontWeight.bold,
+                  child: Center(
+                    child: SFIcon(
+                      icon,
+                      color: iconThemeColor,
+                      fontSize: 12,
+                      fontWeight: FontWeight.w800,
+                    ),
                   ),
                 ),
                 SizedBox(width: screenWidth * 0.02),
@@ -235,7 +237,7 @@ class CCardText extends StatelessWidget {
           Divider(),
 
           Container(
-            padding: EdgeInsets.only(left: 16, bottom: 10),
+            padding: EdgeInsets.only(left: 16, bottom: 10, right: 16),
             child: content,
           ),
         ],
