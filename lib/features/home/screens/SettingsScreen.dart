@@ -140,7 +140,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                 Opacity(
                   opacity: 0.3,
                   child: Text(
-                    "A Product by  ",
+                    "by  ",
                     style: TextStyle(fontSize: 12, fontWeight: FontWeight.bold),
                   ),
                 ),

@@ -3,10 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shakti/core/helpers/HelperWidgets.dart';
-import 'package:shakti/core/helpers/ImagePickerHelper.dart';
+
 import 'package:shakti/features/auth/controllers/AuthController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
 
@@ -103,19 +102,7 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Image.asset("assets/brand/logo.png", height: 40),
-        actions: [
-          TextButton(
-            onPressed: () async {
-              final image = await ImageHelper.instance.pickImage(
-                source: ImageSource.gallery,
-                imageQuality: 100,
-              );
-
-              ImageHelper.instance.imageFileToBase64(image!);
-            },
-            child: Text("Pick"),
-          ),
-        ],
+        actions: [],
       ),
       body: // Replace the body section with this code after creating the BounceAnimationWidget
           Obx(
@@ -475,68 +462,6 @@ class _HomeScreenState extends State<HomeScreen> {
                               ),
                             ],
                           ),
-                        ),
-
-                        Obx(
-                          () =>
-                              _homeController.subjects.isNotEmpty
-                                  ? Padding(
-                                    padding: const EdgeInsets.only(
-                                      left: 16,
-                                      right: 16,
-                                      bottom: 16,
-                                    ),
-                                    child: CCardText(
-                                      content: Column(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.center,
-
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: [
-                                          const SizedBox(height: 16),
-                                          SFIcon(
-                                            SFIcons.sf_info_circle,
-                                            fontSize: 48,
-                                            color: Theme.of(context)
-                                                .colorScheme
-                                                .onSurface
-                                                .withValues(alpha: 0.3),
-                                          ),
-                                          const SizedBox(height: 16),
-
-                                          Text(
-                                            textAlign: TextAlign.center,
-                                            "See the instructions for better understanding of the working.",
-                                            style: TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                          ),
-                                          const SizedBox(height: 16),
-                                          ElevatedButton(
-                                            style: ButtonStyle(
-                                              elevation: WidgetStatePropertyAll(
-                                                0,
-                                              ),
-                                            ),
-                                            onPressed: () {
-                                              showIntroductionBottomSheet(
-                                                context,
-                                              );
-                                            },
-                                            child: Text("See Instructions"),
-                                          ),
-                                          const SizedBox(height: 16),
-                                        ],
-                                      ),
-
-                                      iconThemeColor:
-                                          Theme.of(context).colorScheme.primary,
-                                      cardTitle: "Instructions",
-                                      icon: SFIcons.sf_info,
-                                    ),
-                                  )
-                                  : Container(),
                         ),
                       ],
                     ),

@@ -20,7 +20,7 @@ class _SplashscreenState extends State<Splashscreen> {
 
   Future<void> _handleInitialNavigation() async {
     // Add a small delay to show the splash screen
-    await Future.delayed(const Duration(seconds: 2));
+    await Future.delayed(const Duration(seconds: 1));
 
     if (!mounted) return;
     if (mounted) {

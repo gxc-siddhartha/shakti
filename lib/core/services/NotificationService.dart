@@ -230,7 +230,7 @@ class NotificationService {
         // Only schedule notifications for future times (not past classes)
         if (scheduleStartTime.isAfter(todaysDate)) {
           // Schedule a notification 15 minutes before class starts
-          final notificationTime = scheduleStartTime;
+          final notificationTime = scheduleStartTime.add(Duration(minutes: 35));
 
           // Only schedule if the notification time is in the future and not already scheduled
           if (notificationTime.isAfter(todaysDate) &&
@@ -247,8 +247,8 @@ class NotificationService {
 
             await flutterLocalNotificationsPlugin.zonedSchedule(
               schedule.hashCode, // Use hashCode for a more reliable unique ID
-              '⏰ ${schedule.subject?.subjectName ?? "Subject"} class is about to end',
-              'You should mark your attendance!',
+              '⏰ ${schedule.subject?.subjectName ?? "Subject"}',
+              'Class is about to end, mark your attendance!',
               tzNotificationTime,
               notificationDetails,
               androidScheduleMode: AndroidScheduleMode.exactAllowWhileIdle,
