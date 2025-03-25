@@ -3,12 +3,14 @@ import 'package:flutter/material.dart';
 import 'package:shakti/core/DependencyManager.dart';
 import 'package:shakti/core/router/RouterService.dart';
 import 'package:shakti/core/theme/appTheme.dart';
+import 'package:timezone/data/latest.dart' as tz;
 
 import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
+  tz.initializeTimeZones();
   DependencyInjection.init();
   runApp(const MainApp());
 }
@@ -21,7 +23,6 @@ class MainApp extends StatelessWidget {
     return MaterialApp.router(
       routerConfig: RouterService.routerService,
       theme: Apptheme.lightAppTheme,
-      // darkTheme: Apptheme.darkAppTheme,
     );
   }
 }

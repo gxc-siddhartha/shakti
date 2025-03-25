@@ -3,8 +3,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:image_picker/image_picker.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shakti/core/helpers/HelperWidgets.dart';
+import 'package:shakti/core/helpers/ImagePickerHelper.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
 
@@ -101,7 +103,19 @@ class _HomeScreenState extends State<HomeScreen> {
     return Scaffold(
       appBar: AppBar(
         title: Image.asset("assets/brand/logo.png", height: 40),
-        actions: [],
+        actions: [
+          TextButton(
+            onPressed: () async {
+              final image = await ImageHelper.instance.pickImage(
+                source: ImageSource.gallery,
+                imageQuality: 100,
+              );
+
+              ImageHelper.instance.imageFileToBase64(image!);
+            },
+            child: Text("Pick"),
+          ),
+        ],
       ),
       body: // Replace the body section with this code after creating the BounceAnimationWidget
           Obx(
@@ -281,11 +295,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                 ?.subject
                                                 ?.subjectName ??
                                             "",
-                                        style: TextStyle(
-                                          fontSize: 24,
-                                          fontWeight: FontWeight.bold,
-                                          letterSpacing: -1,
-                                        ),
+                                        style: TextStyle(fontSize: 24),
                                       ),
                                       iconThemeColor:
                                           Theme.of(

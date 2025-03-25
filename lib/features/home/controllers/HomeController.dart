@@ -3,12 +3,14 @@ import 'package:get/get.dart';
 import 'package:shakti/core/models/ScheduleModel.dart';
 import 'package:shakti/core/models/SubjectModel.dart';
 import 'package:shakti/core/models/UserModel.dart';
+import 'package:shakti/core/services/NotificationService.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
 import 'package:shakti/features/home/repositories/HomeRepository.dart';
 
 class HomeController extends GetxController {
   final HomeRepository _homeRepository = Get.find<HomeRepository>();
-
+  final NotificationService _notificationService =
+      Get.find<NotificationService>();
   // Observables
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
@@ -115,9 +117,15 @@ class HomeController extends GetxController {
         errorMessage.value = failure;
         print(failure);
       },
-      (fetchedSchedules) {
+      (fetchedSchedules) async {
         schedules.value = fetchedSchedules;
         calculateOverallStatistics();
+
+        await Future.delayed(Duration(seconds: 2));
+        await _notificationService.checkForNotificationPermission();
+        await _notificationService.scheduleNotificationsForToday(
+          fetchedSchedules,
+        );
       },
     );
     isLoading.value = false;

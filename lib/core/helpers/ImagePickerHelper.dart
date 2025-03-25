@@ -1,4 +1,6 @@
 // lib/core/helpers/image_helper.dart
+import 'dart:convert';
+
 import 'package:image_picker/image_picker.dart';
 
 class ImageHelper {
@@ -8,10 +10,21 @@ class ImageHelper {
 
   final ImagePicker _picker = ImagePicker();
 
+  Future<String> imageFileToBase64(XFile imageFile) async {
+    // Read file as bytes - XFile has its own readAsBytes method
+    List<int> imageBytes = await imageFile.readAsBytes();
+
+    // Convert bytes to base64 string
+    String base64Image = base64Encode(imageBytes);
+    print(base64Image);
+
+    return base64Image;
+  }
+
   // Pick single image from gallery
   Future<XFile?> pickImage({
     ImageSource source = ImageSource.gallery,
-    int imageQuality = 80,
+    int imageQuality = 50,
     bool requestFullMetadata = true,
   }) async {
     try {
