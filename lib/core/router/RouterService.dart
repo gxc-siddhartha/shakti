@@ -5,6 +5,7 @@ import 'package:shakti/features/auth/screens/LoginScreen.dart';
 import 'package:shakti/features/auth/screens/PersonalDetailsScreen.dart';
 import 'package:shakti/features/auth/screens/RegistrationComplete.dart';
 import 'package:shakti/features/auth/screens/RegistrationScreen.dart';
+import 'package:shakti/features/home/screens/AllAttendancesScreen.dart';
 import 'package:shakti/features/home/screens/HomeScreen.dart';
 import 'package:shakti/features/home/screens/ScheduleScreen.dart';
 import 'package:shakti/features/home/screens/SettingsScreen.dart';
@@ -72,6 +73,17 @@ class RouterService {
                       final subject = state.extra as SubjectModel;
                       return SubjectDetailsScreen(subject: subject);
                     },
+
+                    routes: [
+                      GoRoute(
+                        path: '/home/subjectDetails/allAttedances',
+                        name: RouterConstants.allAttendancesScreenRouteName,
+                        builder: (context, state) {
+                          final subject = state.extra as SubjectModel;
+                          return AllattendancesScreen(subject: subject);
+                        },
+                      ),
+                    ],
                   ),
                 ],
               ),

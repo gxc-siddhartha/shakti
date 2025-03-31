@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
+import 'package:shakti/features/home/controllers/HomeController.dart';
 
 class Splashscreen extends StatefulWidget {
   const Splashscreen({super.key});
@@ -11,6 +12,7 @@ class Splashscreen extends StatefulWidget {
 
 class _SplashscreenState extends State<Splashscreen> {
   final AuthController _authController = Get.find<AuthController>();
+  final HomeController _homeController = Get.find<HomeController>();
 
   @override
   void initState() {
@@ -19,12 +21,9 @@ class _SplashscreenState extends State<Splashscreen> {
   }
 
   Future<void> _handleInitialNavigation() async {
-    // Add a small delay to show the splash screen
-    await Future.delayed(const Duration(seconds: 1));
-
     if (!mounted) return;
     if (mounted) {
-      _authController.handleAuthNavigation(context);
+      _authController.handleAuthNavigation(context, _homeController);
     }
   }
 

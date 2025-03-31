@@ -1,10 +1,12 @@
-import 'package:flutter/cupertino.dart';
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:go_router/go_router.dart';
 import 'package:shakti/core/models/ScheduleModel.dart';
 import 'package:shakti/core/models/SubjectModel.dart';
 import 'package:shakti/core/models/UserModel.dart';
 import 'package:shakti/core/services/NotificationService.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
+import 'package:shakti/features/home/controllers/AttendanceController.dart';
 import 'package:shakti/features/home/repositories/HomeRepository.dart';
 
 class HomeController extends GetxController {
@@ -34,6 +36,50 @@ class HomeController extends GetxController {
     Get.find<AuthController>(tag: null);
   }
 
+  // Get date range for attendance charts with proper distribution
+  // A more precise function to get chart date range
+  DateTimeRange getExactChartDateRange(String? subjectName) {
+    final attendanceController = Get.find<AttendanceController>();
+    final DateTime now = DateTime.now();
+
+    // Default fallback range (7 days)
+    DateTime minDate = now.subtract(const Duration(days: 6));
+    DateTime maxDate = now;
+
+    if (attendanceController.attendanceChartData.isNotEmpty) {
+      try {
+        // Extract all dates from chart data
+        List<DateTime> chartDates =
+            attendanceController.attendanceChartData
+                .map((data) => data.date)
+                .toList();
+
+        if (chartDates.isNotEmpty) {
+          // Sort and get exact min/max from actual data points
+          chartDates.sort((a, b) => a.compareTo(b));
+          minDate = chartDates.first;
+          maxDate = chartDates.last;
+
+          // If we only have one date or dates very close together,
+          // ensure a minimum range for better visualization
+          if (maxDate.difference(minDate).inDays < 2) {
+            // Only expand if we have just one date or very close dates
+            minDate = minDate.subtract(const Duration(days: 1));
+            maxDate = maxDate.add(const Duration(days: 1));
+          }
+        }
+      } catch (e) {
+        print('Error calculating exact chart date range: $e');
+      }
+    }
+
+    // Return date range with times set to start/end of day for clean boundaries
+    return DateTimeRange(
+      start: DateTime(minDate.year, minDate.month, minDate.day),
+      end: DateTime(maxDate.year, maxDate.month, maxDate.day, 23, 59, 59),
+    );
+  }
+
   void calculateOverallStatistics() {
     overallPercentage.value = " ${getOverallPercentage()}%";
     todaySchedulesCount.value = getTodaySchedulesCount();
@@ -58,8 +104,6 @@ class HomeController extends GetxController {
         fetchSubjects();
       },
     );
-
-    isLoading.value = false;
   }
 
   Future<void> fetchSubjects() async {
@@ -521,6 +565,9 @@ class HomeController extends GetxController {
           );
 
           success = true;
+          if (context.mounted) {
+            context.pop();
+          }
           isLoading.value = false;
         },
       );

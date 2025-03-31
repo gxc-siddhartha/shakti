@@ -5,6 +5,7 @@ import 'package:go_router/go_router.dart';
 import 'package:shakti/core/models/UserModel.dart';
 import 'package:shakti/core/router/RouterConstants.dart';
 import 'package:shakti/features/auth/repositories/AuthRepository.dart';
+import 'package:shakti/features/home/controllers/HomeController.dart';
 
 class AuthController extends GetxController {
   final AuthRepository _authRepository = Get.find<AuthRepository>();
@@ -92,6 +93,7 @@ class AuthController extends GetxController {
     String email,
     String password,
     BuildContext context,
+    HomeController _homeController,
   ) async {
     try {
       isLoading.value = true;
@@ -106,7 +108,7 @@ class AuthController extends GetxController {
         },
         (userModel) {
           activeUser.value = userModel;
-          handleAuthNavigation(context);
+          handleAuthNavigation(context, _homeController);
         },
       );
     } finally {
@@ -114,7 +116,10 @@ class AuthController extends GetxController {
     }
   }
 
-  Future<void> loginWithGoogle(BuildContext context) async {
+  Future<void> loginWithGoogle(
+    BuildContext context,
+    HomeController _homeController,
+  ) async {
     try {
       isLoading.value = true;
       final result = await _authRepository.signInWithGoogle();
@@ -125,7 +130,7 @@ class AuthController extends GetxController {
         },
         (userModel) {
           activeUser.value = userModel;
-          handleAuthNavigation(context);
+          handleAuthNavigation(context, _homeController);
         },
       );
     } finally {
@@ -188,7 +193,10 @@ class AuthController extends GetxController {
   }
 
   // Navigate based on login and registration status
-  Future<void> handleAuthNavigation(BuildContext context) async {
+  Future<void> handleAuthNavigation(
+    BuildContext context,
+    HomeController homeController,
+  ) async {
     try {
       final isUserLoggedIn = await isLoggedIn();
       final isUserRegistered = await isRegistered();
@@ -197,7 +205,9 @@ class AuthController extends GetxController {
         if (isUserLoggedIn && !isUserRegistered) {
           context.goNamed(RouterConstants.registrationScreenRouteName);
         } else if (isUserLoggedIn && isUserRegistered) {
-          // User is both logged in and registered - go to home screen
+          await getUserData();
+          await homeController.fetchSubjects();
+          homeController.activeUser.value = activeUser.value;
           context.goNamed(RouterConstants.homeScreenRouteName);
         } else {
           // Default to login screen if neither condition is met

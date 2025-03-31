@@ -5,8 +5,6 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shakti/core/helpers/HelperWidgets.dart';
-
-import 'package:shakti/features/auth/controllers/AuthController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -17,20 +15,7 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
-  final _authController = Get.find<AuthController>();
   final _homeController = Get.find<HomeController>();
-
-  @override
-  void initState() {
-    WidgetsBinding.instance.addPostFrameCallback((_) {
-      // Get user data first
-      _authController.getUserData();
-      _homeController.fetchSubjects();
-      // Then fetch subjects
-      _homeController.activeUser.value = _authController.activeUser.value;
-    });
-    super.initState();
-  }
 
   // Method to handle navigation tab changes
   void showIntroductionBottomSheet(BuildContext context) {
@@ -134,7 +119,7 @@ class _HomeScreenState extends State<HomeScreen> {
                               crossAxisAlignment: CrossAxisAlignment.stretch,
                               children: [
                                 Text(
-                                  "Hello ${(_authController.activeUser.value.name ?? "").split(" ").first},",
+                                  "Hello ${(_homeController.activeUser.value.name ?? "").split(" ").first},",
                                   style: TextStyle(
                                     fontSize: 24,
                                     fontWeight: FontWeight.bold,
@@ -181,7 +166,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                                   .value,
                                               style: TextStyle(
                                                 fontSize: 24,
-
+                                                // fontWeight: FontWeight.w500,
                                                 // Using the primary theme color instead of conditional color
                                               ),
                                             ),

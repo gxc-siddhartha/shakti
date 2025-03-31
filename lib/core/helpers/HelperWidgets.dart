@@ -202,7 +202,6 @@ class CCardText extends StatelessWidget {
                 Container(
                   height: 30,
                   width: 30,
-
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(100),
                     color: iconThemeColor.withValues(alpha: 0.2),
@@ -224,6 +223,7 @@ class CCardText extends StatelessWidget {
                     child: Text(
                       cardTitle,
                       style: TextStyle(
+                        fontWeight: FontWeight.w500,
                         color: Theme.of(
                           context,
                         ).colorScheme.onSurface.withValues(alpha: 0.6),

@@ -6,12 +6,13 @@ class Apptheme {
   static final ThemeData lightAppTheme = ThemeData(
     useMaterial3: false,
     scaffoldBackgroundColor: const Color(0xffF2F2F2),
-    fontFamily: "Inter",
+    fontFamily: "Lato",
     appBarTheme: AppBarTheme(
       elevation: 0,
       iconTheme: IconThemeData(color: Colors.black),
       backgroundColor: Colors.white,
       titleTextStyle: TextStyle(
+        fontFamily: "Lato",
         fontSize: 16,
         fontWeight: FontWeight.w500,
         color: Colors.black,

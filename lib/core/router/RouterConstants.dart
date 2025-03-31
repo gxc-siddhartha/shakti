@@ -11,6 +11,8 @@ class RouterConstants {
   static const settingsScreenRouteName = "settingsScreenRouteName";
   static const subjectDetailsScreenRouteName = "subjectDetailsScreenRouteName";
 
+  static const allAttendancesScreenRouteName = "allAttendancesScreenRouteName";
+
   // Shell route name
   static const shellRouteName = "shellRouteName";
 }

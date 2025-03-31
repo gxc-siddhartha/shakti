@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
 import 'package:shakti/core/router/RouterConstants.dart';
 import 'package:shakti/features/auth/controllers/AuthController.dart';
+import 'package:shakti/features/home/controllers/HomeController.dart';
 
 class LoginScreen extends StatefulWidget {
   const LoginScreen({super.key});
@@ -14,6 +15,7 @@ class LoginScreen extends StatefulWidget {
 
 class _LoginScreenState extends State<LoginScreen> {
   final _authController = Get.find<AuthController>();
+  final _homeController = Get.find<HomeController>();
   final _formKey = GlobalKey<FormState>();
   final _emailController = TextEditingController();
   final _passwordController = TextEditingController();
@@ -41,12 +43,13 @@ class _LoginScreenState extends State<LoginScreen> {
         _emailController.text.trim(),
         _passwordController.text.trim(),
         context,
+        _homeController,
       );
     }
   }
 
   void _handleGoogleSignIn() async {
-    await _authController.loginWithGoogle(context);
+    await _authController.loginWithGoogle(context, _homeController);
   }
 
   String? _validateEmail(String? value) {

@@ -9,6 +9,7 @@ import 'package:shakti/core/helpers/HelperWidgets.dart';
 import 'package:shakti/core/models/AttendanceModel.dart';
 import 'package:shakti/core/models/ScheduleModel.dart';
 import 'package:shakti/core/models/SubjectModel.dart';
+import 'package:shakti/core/router/RouterConstants.dart';
 import 'package:shakti/features/home/controllers/AttendanceController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
 import 'package:shakti/features/home/screens/MarkAttendanceDialog.dart';
@@ -68,6 +69,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                     selectedSchedule,
                     status,
                     selectedDate!,
+                    _homeController,
                   );
 
                   ScaffoldMessenger.of(context).showSnackBar(
@@ -232,7 +234,8 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                 ),
                                 child: Center(
                                   child: SFIcon(
-                                    SFIcons.sf_list_and_film,
+                                    SFIcons.sf_list_bullet,
+                                    fontWeight: FontWeight.w800,
                                     color:
                                         Theme.of(context).colorScheme.primary,
                                     fontSize: 12,
@@ -252,6 +255,34 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                   ),
                                 ),
                               ),
+                              TextButton(
+                                onPressed: () {
+                                  context.goNamed(
+                                    RouterConstants
+                                        .allAttendancesScreenRouteName,
+                                    extra: widget.subject,
+                                  );
+                                },
+                                child: Text("View All"),
+                              ),
+                              // Obx(
+                              //   () =>
+                              //       _attendanceController
+                              //                   .attendanceRecords
+                              //                   .length >
+                              //               10
+                              //           ? TextButton(
+                              //             onPressed: () {
+                              //               context.goNamed(
+                              //                 RouterConstants
+                              //                     .allAttendancesScreenRouteName,
+                              //                 extra: widget.subject,
+                              //               );
+                              //             },
+                              //             child: Text("View All"),
+                              //           )
+                              //           : Container(),
+                              // ),
                             ],
                           ),
                         ),
@@ -308,9 +339,8 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
       );
     }
 
-    // Calculate the date range for the last week to today
-    final DateTime upperLimit = DateTime.now();
-    final DateTime lowerLimit = upperLimit.subtract(const Duration(days: 6));
+    final DateTime upperLimit = _attendanceController.minimumDate.value;
+    final DateTime lowerLimit = _attendanceController.maximumDate.value;
 
     return SizedBox(
       height: 150,
@@ -322,12 +352,15 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
           title: AxisTitle(text: 'Last 7 Days'),
           minimum: lowerLimit,
           isVisible: false,
+          edgeLabelPlacement: EdgeLabelPlacement.shift,
           maximum: upperLimit,
         ),
         primaryYAxis: NumericAxis(
           minimum: -5,
           maximum: 105,
           interval: 20,
+          labelAlignment: LabelAlignment.end, // Add this
+          plotOffset: 0, // Add this to reduce space
           isVisible: false,
           labelFormat: '{value}%',
           axisLine: const AxisLine(width: 0),
@@ -518,10 +551,33 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                 extentRatio: 0.25,
                 children: [
                   SlidableAction(
-                    onPressed: (context) {
-                      _attendanceController.confirmAndDeleteAttendance(
-                        context,
-                        record,
+                    onPressed: (context) async {
+                      await showDialog(
+                        context: context,
+                        builder: (BuildContext dcontext) {
+                          return AlertDialog(
+                            title: Text('Delete Attendance Record'),
+                            content: Text(
+                              'Are you sure you want to continue with this action?',
+                            ),
+                            actions: [
+                              TextButton(
+                                onPressed: () => dcontext.pop(),
+                                child: Text('Cancel'),
+                              ),
+                              TextButton(
+                                onPressed: () async {
+                                  dcontext.pop();
+                                  await _attendanceController.deleteAttendance(
+                                    record,
+                                    context,
+                                  );
+                                },
+                                child: Text('Delete'),
+                              ),
+                            ],
+                          );
+                        },
                       );
                     },
                     backgroundColor: Theme.of(
@@ -738,19 +794,10 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                     );
 
                     // Call the delete method
-                    final success = await _homeController.deleteSubject(
+                    await _homeController.deleteSubject(
                       widget.subject.subjectName ?? "",
                       context,
                     );
-
-                    if (success) {
-                      // Show success message
-                      if (context.mounted) {
-                        context.pop();
-                      }
-                    } else {
-                      // Show error message
-                    }
                   },
                   child: const Text('Delete'),
                 ),

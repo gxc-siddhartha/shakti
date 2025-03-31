@@ -23,6 +23,9 @@ class AttendanceController extends GetxController {
   RxBool isLoading = false.obs;
   RxString errorMessage = ''.obs;
 
+  Rx<DateTime> minimumDate = DateTime.now().obs;
+  Rx<DateTime> maximumDate = DateTime.now().obs;
+
   // Attendance records
   RxList<AttendanceModel> attendanceRecords = <AttendanceModel>[].obs;
 
@@ -42,6 +45,7 @@ class AttendanceController extends GetxController {
     ScheduleModel schedule,
     String status,
     DateTime selectedDate,
+    HomeController homeController,
   ) async {
     isLoading.value = true;
     errorMessage.value = '';
@@ -64,10 +68,9 @@ class AttendanceController extends GetxController {
       },
       (_) async {
         await fetchAttendanceRecords(attendance.subject!);
+        await homeController.fetchSubjects();
       },
     );
-
-    isLoading.value = false;
   }
 
   // Fetch all attendance records
@@ -95,8 +98,10 @@ class AttendanceController extends GetxController {
 
   // Generate chart data for attendance percentage over time
   void generateChartData() {
+    // Clear any existing data
+    attendanceChartData.clear();
+
     if (attendanceRecords.isEmpty) {
-      attendanceChartData.clear();
       return;
     }
 
@@ -107,125 +112,51 @@ class AttendanceController extends GetxController {
       return int.parse(a.dateInMillis!).compareTo(int.parse(b.dateInMillis!));
     });
 
-    // Create map to track percentage on each date
-    final Map<String, ChartData> chartDataMap = {};
+    // Track running totals for percentage calculation
+    int attendedCount = 0;
+    List<ChartData> chartPoints = [];
 
-    int cumulativeTotal = 0;
-    int cumulativePresent = 0;
-
-    // Get all dates for overall percentage calculation
-    for (var record in sortedRecords) {
+    // Process each record chronologically
+    for (int i = 0; i < sortedRecords.length; i++) {
+      final record = sortedRecords[i];
       if (record.dateInMillis == null) continue;
 
-      // Get the date without time
-      final dateMillis = int.parse(record.dateInMillis!);
-      final date = DateTime.fromMillisecondsSinceEpoch(dateMillis);
-      final dateKey = '${date.year}-${date.month}-${date.day}';
-
-      // Increment counters
-      cumulativeTotal++;
+      // Increment attended count if present
       if (record.status == 'Present') {
-        cumulativePresent++;
+        attendedCount++;
       }
 
-      // Calculate percentage
-      final percentage = (cumulativePresent / cumulativeTotal) * 100;
+      // Calculate current percentage
+      double percentage = (attendedCount / (i + 1)) * 100;
 
-      // Update chart data for this date
-      chartDataMap[dateKey] = ChartData(
-        DateTime(date.year, date.month, date.day),
-        percentage,
+      // Create date point (just use the actual record date)
+      DateTime date = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(record.dateInMillis!),
+      );
+
+      // Add data point
+      chartPoints.add(ChartData(date, percentage));
+
+      // For debugging
+      print(
+        'Added chart point: ${date.toString()}, ${percentage.toStringAsFixed(1)}%',
       );
     }
 
-    // Calculate the date for 1 week ago
-    final today = DateTime.now();
-    final lastWeek = today.subtract(Duration(days: 7));
+    // Set the chart data directly from actual records, without interpolation
+    attendanceChartData.value = chartPoints;
 
-    // Fill in missing dates between last week and today
-    DateTime currentDate = DateTime(
-      lastWeek.year,
-      lastWeek.month,
-      lastWeek.day,
-    );
-    final endDate = DateTime(today.year, today.month, today.day);
-
-    List<ChartData> lastWeekData = [];
-
-    // If we have no data at all, just show a flat line at 0%
-    if (chartDataMap.isEmpty) {
-      while (currentDate.isBefore(endDate) ||
-          currentDate.isAtSameMomentAs(endDate)) {
-        lastWeekData.add(
-          ChartData(
-            DateTime(currentDate.year, currentDate.month, currentDate.day),
-            0.0,
-          ),
-        );
-        currentDate = currentDate.add(Duration(days: 1));
-      }
-      attendanceChartData.value = lastWeekData;
-      return;
-    }
-
-    // Find the percentage value for lastWeek date or earlier
-    double startPercentage = 0.0;
-    List<String> sortedKeys = chartDataMap.keys.toList()..sort();
-    for (var key in sortedKeys) {
-      DateTime dateFromKey = DateTime(
-        int.parse(key.split('-')[0]),
-        int.parse(key.split('-')[1]),
-        int.parse(key.split('-')[2]),
+    // Set min/max dates for chart bounds
+    if (sortedRecords.isNotEmpty) {
+      minimumDate.value = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(sortedRecords.first.dateInMillis!),
+      );
+      maximumDate.value = DateTime.fromMillisecondsSinceEpoch(
+        int.parse(sortedRecords.last.dateInMillis!),
       );
 
-      if (dateFromKey.isBefore(lastWeek) ||
-          dateFromKey.isAtSameMomentAs(lastWeek)) {
-        startPercentage = chartDataMap[key]!.percentage;
-      }
+      print('Chart date range: ${minimumDate.value} to ${maximumDate.value}');
     }
-
-    // Create data for each day in the last week
-    while (currentDate.isBefore(endDate) ||
-        currentDate.isAtSameMomentAs(endDate)) {
-      final dateKey =
-          '${currentDate.year}-${currentDate.month}-${currentDate.day}';
-
-      if (chartDataMap.containsKey(dateKey)) {
-        // Use actual data if we have it
-        lastWeekData.add(chartDataMap[dateKey]!);
-      } else {
-        // Use the last known percentage before this date
-        double previousPercentage = startPercentage;
-
-        for (var key in sortedKeys) {
-          DateTime dateFromKey = DateTime(
-            int.parse(key.split('-')[0]),
-            int.parse(key.split('-')[1]),
-            int.parse(key.split('-')[2]),
-          );
-
-          if (dateFromKey.isBefore(currentDate) &&
-              chartDataMap[key]!.percentage != previousPercentage) {
-            previousPercentage = chartDataMap[key]!.percentage;
-          }
-        }
-
-        lastWeekData.add(
-          ChartData(
-            DateTime(currentDate.year, currentDate.month, currentDate.day),
-            previousPercentage,
-          ),
-        );
-      }
-
-      currentDate = currentDate.add(Duration(days: 1));
-    }
-
-    // Sort by date to ensure chronological order
-    lastWeekData.sort((a, b) => a.date.compareTo(b.date));
-
-    // Update chart data
-    attendanceChartData.value = lastWeekData;
   }
 
   // Check if attendance is already marked for the current active schedule
@@ -320,22 +251,11 @@ class AttendanceController extends GetxController {
     }
   }
 
-  // Helper method to format a timestamp string into a readable date
-  String _formatDate(String? millisStr) {
-    if (millisStr == null) return 'Unknown date';
-
-    try {
-      final dateTime = DateTime.fromMillisecondsSinceEpoch(
-        int.parse(millisStr),
-      );
-      return '${dateTime.day}/${dateTime.month}/${dateTime.year}';
-    } catch (e) {
-      return 'Invalid date';
-    }
-  }
-
   // Delete an attendance record
-  Future<bool> deleteAttendance(AttendanceModel attendance) async {
+  Future<bool> deleteAttendance(
+    AttendanceModel attendance,
+    BuildContext context,
+  ) async {
     isLoading.value = true;
     errorMessage.value = '';
     bool success = false;
@@ -364,11 +284,12 @@ class AttendanceController extends GetxController {
                 record.dateInMillis == attendance.dateInMillis,
           );
 
-          fetchAttendanceRecords(attendance.subject!);
-
+          await fetchAttendanceRecords(attendance.subject!);
+          if (context.mounted) {
+            context.pop();
+          }
           print('Attendance record deleted successfully');
           success = true;
-          isLoading.value = false;
         },
       );
     } catch (e) {
@@ -377,52 +298,5 @@ class AttendanceController extends GetxController {
     }
 
     return success;
-  }
-
-  // Show confirmation dialog before deleting attendance
-  Future<void> confirmAndDeleteAttendance(
-    BuildContext context,
-    AttendanceModel attendance,
-  ) async {
-    // Show confirmation dialog
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return AlertDialog(
-          title: Text('Delete Attendance Record'),
-          content: Text(
-            'Are you sure you want to delete this attendance record for ${attendance.subject?.subjectName} on ${_formatDate(attendance.dateInMillis)}?',
-          ),
-          actions: [
-            TextButton(onPressed: () => context.pop(), child: Text('Cancel')),
-            TextButton(
-              onPressed: () async {
-                Navigator.of(context).pop();
-                final success = await deleteAttendance(attendance);
-
-                if (success) {
-                  // Show success message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text('Attendance record deleted successfully'),
-                      backgroundColor: Colors.green,
-                    ),
-                  );
-                } else {
-                  // Show error message
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(
-                      content: Text(errorMessage.value),
-                      backgroundColor: Colors.red,
-                    ),
-                  );
-                }
-              },
-              child: Text('Delete'),
-            ),
-          ],
-        );
-      },
-    );
   }
 }

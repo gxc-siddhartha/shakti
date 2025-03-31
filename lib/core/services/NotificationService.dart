@@ -222,6 +222,9 @@ class NotificationService {
         final scheduleStartTime = DateTime.fromMillisecondsSinceEpoch(
           int.parse(schedule.startTimeInMillis!),
         );
+        final scheduleEndTime = DateTime.fromMillisecondsSinceEpoch(
+          int.parse(schedule.endTimeInMillis!),
+        );
 
         // Create a unique identifier for this schedule
         final String scheduleIdentifier =
@@ -230,7 +233,9 @@ class NotificationService {
         // Only schedule notifications for future times (not past classes)
         if (scheduleStartTime.isAfter(todaysDate)) {
           // Schedule a notification 15 minutes before class starts
-          final notificationTime = scheduleStartTime.add(Duration(minutes: 35));
+          final notificationTime = scheduleEndTime.subtract(
+            Duration(minutes: 10),
+          );
 
           // Only schedule if the notification time is in the future and not already scheduled
           if (notificationTime.isAfter(todaysDate) &&
