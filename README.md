@@ -25,3 +25,7 @@ And one more thing... it's completely free for students who need it most.
 
 ### Contributing
 Want to be part of something insanely great? We're looking for people who want to make a dent in the universe. Check out our contribution guidelines and join us in changing millions of lives.
+
+# Technical Specs
+Flutter Version: 3.29.0
+Java Version: 17.0.14
