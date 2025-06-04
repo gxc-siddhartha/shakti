@@ -235,7 +235,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                 color: Theme.of(
                   context,
                 ).colorScheme.onSurface.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -296,7 +296,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                   color: Theme.of(
                     context,
                   ).colorScheme.onSurface.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -351,7 +351,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                         color: Theme.of(
                           context,
                         ).colorScheme.onSurface.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -404,7 +404,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                         color: Theme.of(
                           context,
                         ).colorScheme.onSurface.withOpacity(0.05),
-                        borderRadius: BorderRadius.circular(5),
+                        borderRadius: BorderRadius.circular(16),
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -453,7 +453,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                 color: Theme.of(
                   context,
                 ).colorScheme.onSurface.withOpacity(0.05),
-                borderRadius: BorderRadius.circular(5),
+                borderRadius: BorderRadius.circular(16),
               ),
               child: DropdownButtonHideUnderline(
                 child: DropdownButton<String>(
@@ -514,7 +514,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                   color: Theme.of(
                     context,
                   ).colorScheme.onSurface.withOpacity(0.05),
-                  borderRadius: BorderRadius.circular(5),
+                  borderRadius: BorderRadius.circular(16),
                 ),
                 child: Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -573,7 +573,7 @@ class AddScheduleButtonSheetState extends State<AddScheduleButtonSheet> {
                     context,
                   ).colorScheme.primary.withOpacity(0.5),
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5),
+                    borderRadius: BorderRadius.circular(16),
                   ),
                 ),
                 child: Text(

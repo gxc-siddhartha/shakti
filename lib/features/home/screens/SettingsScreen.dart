@@ -125,7 +125,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     ),
                     iconThemeColor: Theme.of(context).colorScheme.primary,
                     cardTitle: "Account Actions",
-                    icon: Icons.person,
+                    icon: SFIcons.sf_person_2,
                   ),
                 ),
               ],

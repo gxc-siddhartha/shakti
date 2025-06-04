@@ -183,12 +183,12 @@ class CCardText extends StatelessWidget {
     final screenWidth = MediaQuery.of(context).size.width;
     return Container(
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.15),
-        ),
-        borderRadius: BorderRadius.circular(5),
+        // border: Border.all(
+        //   color: Theme.of(
+        //     context,
+        //   ).colorScheme.onSurface.withValues(alpha: 0.15),
+        // ),
+        borderRadius: BorderRadius.circular(16),
         color: Theme.of(context).colorScheme.surface,
       ),
       child: Column(
@@ -234,8 +234,7 @@ class CCardText extends StatelessWidget {
               ],
             ),
           ),
-          Divider(),
-
+          const SizedBox(height: 10),
           Container(
             padding: EdgeInsets.only(left: 16, bottom: 10, right: 16),
             child: content,
@@ -269,12 +268,12 @@ class CCardStats extends StatelessWidget {
       padding: EdgeInsets.all(16),
 
       decoration: BoxDecoration(
-        border: Border.all(
-          color: Theme.of(
-            context,
-          ).colorScheme.onSurface.withValues(alpha: 0.15),
-        ),
-        borderRadius: BorderRadius.circular(5),
+        // border: Border.all(
+        //   color: Theme.of(
+        //     context,
+        //   ).colorScheme.onSurface.withValues(alpha: 0.15),
+        // ),
+        borderRadius: BorderRadius.circular(16),
         color: Theme.of(context).colorScheme.surface,
       ),
       child: Column(

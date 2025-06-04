@@ -5,7 +5,7 @@ import 'package:shakti/core/theme/kConstants.dart';
 class Apptheme {
   static final ThemeData lightAppTheme = ThemeData(
     useMaterial3: false,
-    scaffoldBackgroundColor: const Color(0xffF2F2F2),
+    scaffoldBackgroundColor: const Color.fromARGB(255, 244, 244, 244),
     fontFamily: "Lato",
     appBarTheme: AppBarTheme(
       elevation: 0,
@@ -27,7 +27,7 @@ class Apptheme {
       surface: Colors.white,
       seedColor: KConstants.themeColor,
       brightness: Brightness.light,
-    ),
+    ).copyWith(primary: Color(0xff7533BB)),
   );
   static final ThemeData darkAppTheme = ThemeData(
     scaffoldBackgroundColor: Colors.black,

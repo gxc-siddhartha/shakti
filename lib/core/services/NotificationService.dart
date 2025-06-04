@@ -1,5 +1,6 @@
 import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:fpdart/fpdart.dart';
+import 'package:get/get_utils/src/extensions/export.dart';
 import 'package:get/instance_manager.dart';
 import 'dart:io' show Platform;
 import 'package:permission_handler/permission_handler.dart';
@@ -184,20 +185,31 @@ class NotificationService {
       final todaysDate = DateTime.now();
       print("Today's date: ${todaysDate.weekday}");
 
+      print("Total schedules to check: ${schedules.length}");
+
       for (int i = 0; i < schedules.length; i++) {
         final scheduleModel = schedules[i];
         final scheduleDate = DateTime.fromMillisecondsSinceEpoch(
           int.parse(scheduleModel.startTimeInMillis!),
         );
 
-        if (scheduleDate.day == todaysDate.day &&
-            scheduleDate.month == todaysDate.month &&
-            scheduleDate.year == todaysDate.year) {
+        print("Schedule ${i + 1}: ${scheduleModel.subject?.subjectName}");
+        print("  Date: ${scheduleDate.toString()}");
+        print(
+          "  Today's day: ${todaysDate.day}, Schedule day: ${scheduleDate.day}",
+        );
+        print("  Match? ${scheduleDate.weekday == todaysDate.weekday}");
+
+        if (scheduleDate.weekday == todaysDate.weekday) {
           todaysSchedules.add(scheduleModel);
+          print("  Added to today's schedules");
         } else {
           continue;
         }
       }
+
+      print("Total schedules found for today: ${todaysSchedules.length}");
+      // Solved Here for Adding Schedules into Today's Schedules
 
       // Set up notification details
       const AndroidNotificationDetails androidDetails =
@@ -231,13 +243,18 @@ class NotificationService {
             "${schedule.subject!.subjectName!.toLowerCase().replaceAll(" ", "_")}_${schedule.startTimeInMillis}";
 
         // Only schedule notifications for future times (not past classes)
-        if (scheduleStartTime.isAfter(todaysDate)) {
+        if (scheduleStartTime.hour > todaysDate.hour) {
           // Schedule a notification 15 minutes before class starts
-          final notificationTime = scheduleEndTime.subtract(
-            Duration(minutes: 10),
-          );
+          // final notificationTime = scheduleEndTime.subtract(
+          //   Duration(minutes: 10),
+          // );
+
+          // Testing
+          final notificationTime = scheduleEndTime.add(Duration(minutes: 1));
 
           // Only schedule if the notification time is in the future and not already scheduled
+
+          // TODO: Think Logic Here
           if (notificationTime.isAfter(todaysDate) &&
               !existingScheduledNotifications.contains(scheduleIdentifier)) {
             // Create a payload with subject information for navigation when tapped

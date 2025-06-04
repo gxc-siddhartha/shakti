@@ -139,7 +139,7 @@ class AttendanceController extends GetxController {
 
       // For debugging
       print(
-        'Added chart point: ${date.toString()}, ${percentage.toStringAsFixed(1)}%',
+        'Added chart point: ${date.toString()}, ${percentage.toStringAsFixed(1)}',
       );
     }
 

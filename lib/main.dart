@@ -9,8 +9,8 @@ import 'firebase_options.dart';
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
-  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   tz.initializeTimeZones();
+  await Firebase.initializeApp(options: DefaultFirebaseOptions.currentPlatform);
   DependencyInjection.init();
   runApp(const MainApp());
 }

@@ -202,12 +202,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                   padding: EdgeInsets.symmetric(horizontal: 16),
                   child: Container(
                     decoration: BoxDecoration(
-                      border: Border.all(
-                        color: Theme.of(
-                          context,
-                        ).colorScheme.onSurface.withValues(alpha: 0.15),
-                      ),
-                      borderRadius: BorderRadius.circular(5),
+                      borderRadius: BorderRadius.circular(16),
                       color: Theme.of(context).colorScheme.surface,
                     ),
                     child: Column(
@@ -255,34 +250,34 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                                   ),
                                 ),
                               ),
-                              TextButton(
-                                onPressed: () {
-                                  context.goNamed(
-                                    RouterConstants
-                                        .allAttendancesScreenRouteName,
-                                    extra: widget.subject,
-                                  );
-                                },
-                                child: Text("View All"),
-                              ),
-                              // Obx(
-                              //   () =>
-                              //       _attendanceController
-                              //                   .attendanceRecords
-                              //                   .length >
-                              //               10
-                              //           ? TextButton(
-                              //             onPressed: () {
-                              //               context.goNamed(
-                              //                 RouterConstants
-                              //                     .allAttendancesScreenRouteName,
-                              //                 extra: widget.subject,
-                              //               );
-                              //             },
-                              //             child: Text("View All"),
-                              //           )
-                              //           : Container(),
+                              // TextButton(
+                              //   onPressed: () {
+                              //     context.goNamed(
+                              //       RouterConstants
+                              //           .allAttendancesScreenRouteName,
+                              //       extra: widget.subject,
+                              //     );
+                              //   },
+                              //   child: Text("View All"),
                               // ),
+                              Obx(
+                                () =>
+                                    _attendanceController
+                                                .attendanceRecords
+                                                .length >
+                                            10
+                                        ? TextButton(
+                                          onPressed: () {
+                                            context.goNamed(
+                                              RouterConstants
+                                                  .allAttendancesScreenRouteName,
+                                              extra: widget.subject,
+                                            );
+                                          },
+                                          child: Text("View All"),
+                                        )
+                                        : Container(),
+                              ),
                             ],
                           ),
                         ),
@@ -297,16 +292,17 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                   padding: EdgeInsets.only(left: 16, right: 16, bottom: 16),
                   child: TextButton(
                     style: ButtonStyle(
+                      minimumSize: WidgetStatePropertyAll(
+                        Size(double.infinity, 50),
+                      ),
                       backgroundColor: WidgetStatePropertyAll(
-                        Theme.of(context).colorScheme.surface,
+                        Theme.of(
+                          context,
+                        ).colorScheme.error.withValues(alpha: 0.07),
                       ),
                       shape: WidgetStatePropertyAll(
                         RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(4),
-                          side: BorderSide(
-                            width: 0.5,
-                            color: Theme.of(context).colorScheme.error,
-                          ),
+                          borderRadius: BorderRadius.circular(16),
                         ),
                       ),
                     ),
@@ -362,7 +358,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
           labelAlignment: LabelAlignment.end, // Add this
           plotOffset: 0, // Add this to reduce space
           isVisible: false,
-          labelFormat: '{value}%',
+          labelFormat: '{value}',
           axisLine: const AxisLine(width: 0),
           majorTickLines: const MajorTickLines(size: 0),
           // title: AxisTitle(text: 'Attendance %'),
@@ -544,6 +540,10 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
           }
 
           return ClipRRect(
+            borderRadius:
+                index == 10
+                    ? BorderRadius.circular(16)
+                    : BorderRadius.circular(0),
             child: Slidable(
               // key: ValueKey(record.dateInMillis),
               endActionPane: ActionPane(
@@ -589,16 +589,7 @@ class _SubjectDetailsScreenState extends State<SubjectDetailsScreen> {
                 ],
               ),
               child: Container(
-                decoration: BoxDecoration(
-                  border: Border(
-                    bottom: BorderSide(
-                      width: 0.3,
-                      color: Theme.of(
-                        context,
-                      ).colorScheme.onSurface.withOpacity(0.3),
-                    ),
-                  ),
-                ),
+                decoration: BoxDecoration(),
                 child: ConstrainedBox(
                   constraints: const BoxConstraints(minHeight: 72),
                   child: ListTile(

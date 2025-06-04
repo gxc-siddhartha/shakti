@@ -30,6 +30,9 @@ class HomeController extends GetxController {
   // User data
   final Rx<UserModel> activeUser = UserModel.empty().obs;
 
+  // Overall Percentage Chart Data
+  RxList<ChartData> overallPercentageChartData = <ChartData>[].obs;
+
   @override
   void onInit() {
     super.onInit();

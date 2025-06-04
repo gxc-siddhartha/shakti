@@ -32,9 +32,15 @@ class AttendanceRepository {
           .collection("attendance");
 
       // Create a unique document ID using subject name and current timestamp
-      // This ensures we can have multiple attendance records for the same subject
       String docId =
           "${attendance.subject!.subjectName!.toLowerCase().replaceAll(" ", "_")}_${attendance.schedule!.startTimeInMillis.toString()}";
+
+      // Check if document already exists
+      final docSnapshot = await attendanceRef.doc(docId).get();
+
+      if (docSnapshot.exists) {
+        return left("Attendance already marked for this schedule");
+      }
 
       // Add the attendance record to Firestore
       await attendanceRef.doc(docId).set(attendance.toMap());

@@ -3,9 +3,12 @@ import 'package:flutter/material.dart';
 import 'package:flutter_sficon/flutter_sficon.dart';
 import 'package:get/get.dart';
 import 'package:go_router/go_router.dart';
+import 'package:intl/intl.dart';
 import 'package:introduction_screen/introduction_screen.dart';
 import 'package:shakti/core/helpers/HelperWidgets.dart';
+import 'package:shakti/features/home/controllers/AttendanceController.dart';
 import 'package:shakti/features/home/controllers/HomeController.dart';
+import 'package:syncfusion_flutter_charts/charts.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -256,10 +259,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ) // Empty widget when no active schedule
                                   : Container(
                                     padding: EdgeInsets.all(16),
-                                    child: CCardStats(
-                                      subTitle:
-                                          _homeController
-                                              .getActiveScheduleTimeText(),
+                                    child: CCardText(
                                       content: Text(
                                         _homeController
                                                 .activeSchedule
@@ -287,13 +287,8 @@ class _HomeScreenState extends State<HomeScreen> {
                             bottom: 16,
                           ),
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5),
+                            borderRadius: BorderRadius.circular(16),
                             color: Theme.of(context).colorScheme.surface,
-                            border: Border.all(
-                              color: Theme.of(
-                                context,
-                              ).colorScheme.onSurface.withValues(alpha: 0.15),
-                            ),
                           ),
                           child: Column(
                             mainAxisAlignment: MainAxisAlignment.start,
@@ -365,7 +360,7 @@ class _HomeScreenState extends State<HomeScreen> {
                                   ],
                                 ),
                               ),
-                              Divider(height: 1),
+
                               Obx(
                                 () =>
                                     _homeController.subjects.isNotEmpty
